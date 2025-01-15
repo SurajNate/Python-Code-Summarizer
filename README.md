@@ -1,5 +1,5 @@
 # Python-Code-Summarizer
-It is a Final Year Project of My Bachlor's of Artificial Intelligence and Data Science
+It is a Final Year Project of My Bachlor's in Artificial Intelligence and Data Science.
 This Project Takes Input as code and Give the Summary of the provided Code.
 
 Overall Idea is to Summarise the code or Explain the code line by line so that anyone can understand the flow and execution 
