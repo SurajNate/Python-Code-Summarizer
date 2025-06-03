@@ -1,0 +1,3187 @@
+"code","instructions","language","status","user_created"
+"@app.route('/twitter/')
+def twitter():
+
+	# Twitter Oauth Config
+	TWITTER_CLIENT_ID = os.environ.get('TWITTER_CLIENT_ID')
+	TWITTER_CLIENT_SECRET = os.environ.get('TWITTER_CLIENT_SECRET')
+	oauth.register(
+		name='twitter',
+		client_id=TWITTER_CLIENT_ID,
+		client_secret=TWITTER_CLIENT_SECRET,
+		request_token_url='https://api.twitter.com/oauth/request_token',
+		request_token_params=None,
+		access_token_url='https://api.twitter.com/oauth/access_token',
+		access_token_params=None,
+		authorize_url='https://api.twitter.com/oauth/authenticate',
+		authorize_params=None,
+		api_base_url='https://api.twitter.com/1.1/',
+		client_kwargs=None,
+	)
+	redirect_uri = url_for('twitter_auth', _external=True)
+	return oauth.twitter.authorize_redirect(redirect_uri)","Create a route for '/twitter
+Once the '/twitter' endpoint is hit then only twitter function will run
+1. Set the environment variable for Twitter Api.
+2. Register the twitter with OAuth object 
+3. The above code is creating a redirect_uri variable that is equal to the url_for function. The
+url_for function is a Flask function that takes in the name of the function that you want to
+redirect to. In this case, we want to redirect to the twitter_auth function. The _external=True
+the parameter is telling Flask to create an absolute URL for the function.
+4. Redirect the user to the twitter login page.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"from random import choice
+import string
+
+def generate_password(self):
+    characters = string.ascii_letters + string.punctuation + string.digits
+    password = """"
+    for x in range(28):
+    	password+=choice(characters)
+    self.password_entry.delete(0, END)
+    self.password_entry.insert(0, password)
+","Create a method generate_password 
+1. The method starts by declaring a string called characters is the list of all the letters, numbers, and punctuation that can be used in a password.
+2. The code then declares an empty string to save the password and loops through 28 iterations to generate passwords.
+3. For each iteration, it generates a random character from the list of characters and appends it to the end of the password string.
+4. The loop starts at 0 because there are no spaces in this example so we start counting from zero instead of one like most programming languages do.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_content(self, topic_name = None):
+    """"""queries wikipedia returns the content for the given topic 
+
+    Args:
+    topic_name (string): name of the topic 
+
+    Returns:
+    str: returns the content
+    """"""
+    if topic_name == None:
+    raise ValueError(""please provide the topic name to get the content"")
+
+    data = wikipedia.page(topic_name)
+    return data.content
+    ","Create a method get_content to get the content of an article from wikipedia
+1. At first will check if the topic_name is not given will raise a ValueError else to get the content will make a use of wikipedia content function from wikipedia library.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@auth_blueprint.route(""/signup"", methods=[""POST""])
+def signup():
+    name = request.form[""name""].strip()
+    email = request.form[""email""].strip()
+    password = request.form[""password""].strip()
+    confirm_password = request.form[""confirm_password""].strip()
+
+    if password != confirm_password:
+        print(""Please check the password"")
+        return redirect(url_for(""auth.home""))
+
+    user_id = User.create(
+        name=name,
+        email_address=email,
+        password=password,
+    )
+
+    if user_id:
+        session[""user_id""] = user_id
+
+    return redirect(url_for(""auth.home""))","Create a new controller signup. It should only allow the POST method.
+1. This function extract name, email, password, and confirm_password for the form using flask request library.
+2. Check if the password and confirm_password is the same. If not redirect to the home page.
+
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def refresh_confirmation_token(self):
+    """"""
+    It generates a new confirmation token and updates the confirmation token
+    time to the current time
+    :return: A boolean value.
+    """"""
+    confirmation_token = generate(size=64)
+    current_ts = datetime.now()
+
+    # Updating the confirmation token and the confirmation token time in the
+    # database.
+    try:
+        self.confirmation_token = confirmation_token
+        self.confirmation_token_time = current_ts
+        db.session.commit()
+        return True
+    # Catching any exceptions that may occur and printing the error message.
+    # It is also rolling back the database session and returning False.
+    except Exception as e:
+        print(e)
+        db.session.rollback()
+        return False","1. Create a method refresh_confirmation_token it generate new confirmation token and updates the confirmation token time to the current time.
+2. Use generate function from nanoid to randomly generate the token and save in the variable and set the datetime.now() for the date and time
+3. Update the confirmation token and confirmation token time in the database, commit the changes and return True 
+4. Catching the exceptions in except block that may occurs and printing the error message and also roll back the database session and return False.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def string_to_indexes(array_of_string, ques_bool):
+    array_of_indexes = []
+
+    for word in array_of_string:
+        if word == '<rare word>':
+            word = '<unk>'
+        if word == '.' or word == '?':
+            word = '<eos>'
+        if word == 'what' or word == 'why' or word == 'who' or word == 'how' or word == 'whose' or word == 'when' or word == 'which' or word == 'where':
+            ques_bool = True
+
+        try:
+            array_of_indexes.append(stringToIndex[word])
+        except:
+            print(""Word "", word,
+                  "" does not exist in the vocabulary!\nReplacing it with '<unk>'"")
+            word = '<unk>'
+            array_of_indexes.append(stringToIndex[word])
+            pass
+    return array_of_indexes, ques_bool","Create a function string_to_indexes 
+1. Create an empty list.
+2. Converting the words to their corresponding indexes.
+3. Checking if the word exists in the vocabulary. If it does not exist, it replaces it with '<unk>'.
+4. Return array_of_indexes
+5. An infinite loop that keeps asking for input and then predicts the next word.
+6. Check if the sentences are not empty and print the sentence.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def predict_prev_month_sentiment(self, dir_loc):
+    
+    # Get current month start
+    current_month_start = datetime.today().replace(day=1)
+
+    # Find the previous month end
+    prev_month_end = current_month_start - timedelta(days=1)
+
+    # Extract month
+    prev_month = str(prev_month_end.month)
+
+    # If the month is below 10 add 0 to the start. Eg. Make 7 as 07
+    if len(prev_month) == 1:
+        prev_month = ""0"" + prev_month
+
+    # Extract year
+    prev_month_year = str(prev_month_end.year)
+
+    # Derive filename
+    filename = f""{prev_month}_{prev_month_year}.csv""
+
+    # Derive file location by joining directory and filename
+    file_location = join(dir_loc, filename)
+
+    # Read the dataframe and run the sentiment prediction method
+    # Leave the default column name to ""tweet""
+    data = pd.read_csv(file_location)
+
+    data_sentiment = self.predict_sentiments(data)
+
+    return data_sentiment","The predict_prev_month_sentiment takes the directory location as input and returns the sentiment predictions for the previous month.
+1. Then creates a variable and set it to the datetime.today() value to get the current month's start. Then will find the previous month's end and save it in the variable and will extract the month.
+2. Derive file location by joining the directory and filename
+3. Read the dataframe and run the sentiment prediction method and Leave the default column name to ""tweet""
+
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def extract(zip_file):
+    file_name = zip_file.split("".zip"")[0]
+    if zip_file.endswith("".zip""):
+        
+        #Will use this to save the unzipped file in the current directory
+        current_working_directory = os.getcwd()
+        new_directory = current_working_directory + ""/"" + file_name
+        #Logic to unzip the file
+        with zipfile.ZipFile(zip_file, 'r') as zip_object:
+            zip_object.extractall(new_directory)
+        print(""Extracted successfully!!!"")
+    else:
+        print(""Not a zip file"")
+","
+Create a function extract that will take a zip file as an argument and extract the zip file.
+At first, will check if the file is a zip file or not. If it is then will proceed else will print the error message.
+1. Getting the current working directory using getcwd
+2. Creating a new directory in the current working directory with the name of the zip file.
+3. Then the function goes on to unzip the file, which is done with a ZipFile object.
+4. Extract the zip file to the new directory with the print statement.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@home_blueprint.route(""/resend-confirmation-token"")
+@jwt_required()
+def resend_confirm_token():
+    """"""
+    It checks if the user is
+    already in the database, and if they are, it refreshes the confirmation token
+    and sends it to the user.
+    :return: a dictionary with a status and a message.
+    """"""
+    jwt_data = get_jwt()
+    email = jwt_data[""sub""]
+
+    # Checking if the email address is already in the database.
+    user = UserInfo.query.filter_by(email_address=email).first()
+    uid = user.user_id
+
+    user_login = UserLogin.query.filter_by(user_id=uid).first()
+
+    if user_login:
+        # Refreshing the confirmation token.
+        is_reset = user_login.refresh_confirmation_token()
+
+        # This is a loop that checks if the token has been updated in the
+        # database.
+        for attempt in range(3):
+            new_token = user_login.confirmation_token
+            tok_time = user_login.confirmation_token_time
+            curr_ts = datetime.now()
+
+            # Checking if the time difference between the current time and the
+            # time the token was updated is less than 120 seconds.
+            if (curr_ts - tok_time).total_seconds() < 120:
+                email_resp = send_confirmation_email(uid, new_token, email)
+                return {""status"": True, ""message"": ""Confirmation token resent.""}
+            sleep(5)
+
+    return {""status"": False, ""message"": ""Unable to send confirmation token.""}
+","Lets add an endpoint /resend-confirmation-token 
+
+1. Make sure that JWT exists in the request and extract the user identity by calling get_jwt method. It is a dictionary and the user identity is stored in a key called sub.
+2. Validates that a user exists
+3. Call the refresh_confirmation_token for the user.
+4. Check if the token has been updated in the database by running a loop and wait for 5 seconds before 1 iteration ends.
+5. Send the token confirmation email.
+6. Return a dictionary of status and message. Status should be True if successful and False otherwise. Ensure the message is intuitive.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def add_from_text_file(iptest: str, text_path: str, csv_path: str):
+    ''' This function adds a list of proxies
+    from a text file (line by line).'''
+    text_path: Path = Path(text_path)
+
+    if text_path.exists():
+        proxies: list = text_path.read_text().splitlines()
+
+        for proxy in proxies:
+            '''We will treat each proxy as a single proxy
+            and leverage the existing function'''
+            test_single_proxy(proxy, iptest, csv_path)
+    else:
+        raise FileNotFoundError
+","Create a function add_from_text_file this function adds a list of proxies from a text file (line by line)
+and takes iptest, text_path, csv_path as an argument.
+
+1. Creating a path object from the text_path string.
+2. Checking if the text file exists and if it does, it will read the text file and split it into lines
+3. Iterating through the list of proxies and testing each one by calling the test_single_proxy function or else raising a FileNotFoundError.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def start_game():
+   attempts = 0
+   rand_num = random.randint(1, 10)
+   print('Hello traveler! Welcome to the game of guesses!')
+   player_name = input('What is your name? ')
+   wanna_play = input(
+   # Asking the user if they want to continue adding numbers.
+       f'Hi, {player_name}, would you like to play the guessing game?'
+       '(Enter Yes/No): ')
+
+   if wanna_play.lower() != 'yes':
+      print('That\'s cool, Thanks!')
+      exit()
+   else:
+       show_score()
+
+   whil# Asking the user if they want to continue adding numbers.
+   if wanna_play.lower() == 'yes':
+       try:
+           guess = int(input('Pick a number between 1 and 10: '))
+           if guess < 1 or guess > 10:
+               raise ValueError(
+                   'Please guess a number within the given range')
+
+           attempts += 1
+           attempts_list.append(attempts)
+
+           if guess == rand_num:
+               print('Nice! You got it!')
+               print(f'It took you {attempts} attempts')
+               wanna_play = input(
+                   'Would you like to play again? (Enter Yes/No): ')
+               if wanna_play.lower() != 'yes':
+                   print('That\'s cool, have a good one!')
+                   break
+               else:
+                   attempts = 0
+                   rand_num = random.randint(1, 10)
+                   show_score()
+                   continue
+           else:
+               if guess > rand_num:
+                   print('It\'s lower')
+               elif guess < rand_num:
+                   print('It\'s higher')
+
+       except ValueError as err:
+           print('Oh no!, that is not a valid value. Try again...')
+           print(err)","Create a function start_game 
+1. Set a attempts is zero and random number between 1-10.
+2. Welcome the user uding print statement and asking the user for their name and if they want to play the game.
+3. Check if the user want to play the game or not. If they don't it will exit the game, ele call the function show_score.
+4. In while loop asking the user to guess a number between 1 and 10. If the user guesses the number
+correctly, it will tell them how many attempts it took them to guess the number. If the user
+guesses the number incorrectly, it will tell them if the number is higher or lower than the number they guessed.
+5. If the user guessed the number correctly then will print the total attempts and ask user if we want to play again or not and break.
+6. Else will reset the attempts to 0 and the random number to a new random number between 1 and 10 and call the show_score function.
+7. In except block raise a ValueError along with print statement
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_credentials(filepath):
+    with open(""credentials.txt"", ""r"") as f:
+        email_address = f.readline()
+        email_pass = f.readline()
+    return (email_address, email_pass)","Create function get_credentials that will take file path as an argument and returns the credentials.
+
+1. Open the file in which you have saved the credential in ""r"" mode and read the first two line and save the result in variable and returns them as a tuple.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@home_blueprint.route(""/create-user"", methods=[""POST""])
+def create_user():
+    """"""
+    It takes in a JSON object, and checks if the email address is already in the
+    database, and if it isn't, it creates a new user
+    :return: A dictionary with two keys: user_created and message.
+    """"""
+    # Checking if the request method is not POST. If it isn't, it aborts the
+    # request.
+    if request.method != ""POST"":
+        abort(400)
+
+    # Getting the JSON object from the request and then getting the email address,
+    # first name, and last name from the JSON object.
+    data = request.get_json()
+
+    email = data[""email_address""]
+    fname = data[""first_name""]
+    lname = data[""last_name""]
+
+    # Checking if the email address is already in the database.
+    is_present = UserInfo.query.filter_by(email_address=email).first()
+
+    # Checking if the email address is already in the database.
+    if is_present:
+        return {""user_created"": False, ""message"": ""Email already exists""}
+
+    # Creating a new user.
+    new_user = UserInfo.create(email, fname, lname)
+
+    # Checking if the user was created.
+    if new_user:
+        return {""user_created"": True, ""message"": ""User created""}
+
+    # Default return
+    return {""user_created"": False, ""message"": ""Unable to create user""}
+","1. Create an endpoint that accepts POST requests only and the data must be passed to it in JSON format
+2. At first will check if the request is POST if not then will abort with status 400.
+3. Get the JSON object from the request and extract the email address, first name, and last name.
+4. Check if the email address is already in the database. If it exists show an error stating User Exists.
+5. The return must be a JSON in the format `{""user_created"": boolean, ""message"": ""Feedback message""}`.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@home_blueprint.route(""/login"", methods=[""POST""])
+def login():
+    # Checking if the request method is POST. If it isn't, it aborts the
+    # request.
+    if request.method != ""POST"":
+        abort(400)
+    
+    # Getting the JSON object from the request.
+    data = request.get_json()
+
+    email = data[""email_address""]
+    password = data[""password""]
+
+    # Checking if the email address is already in the database.
+    user = UserInfo.query.filter_by(email_address=email).first()
+
+    # Checking if the email address is already in the database.
+    if user:
+        # Checking if the password entered by the user matches the password
+        # in the database.
+
+        uid = user.user_id
+
+        user_login = UserLogin.query.filter_by(user_id=uid).first()
+        password_match = user_login.verify_password(password)
+
+        # Checking if the password entered by the user matches the password
+        # in the database. If it doesn't, it returns a message. If it
+        # does, it creates an access token and a refresh token, and sets the
+        # cookies.
+        if not password_match:
+            return {""login_status"": False, ""message"": ""Incorrect credentials""}
+
+        access_token = create_access_token(identity=email, fresh=True)
+        refresh_token = create_refresh_token(identity=email)
+        response = jsonify({
+            ""login_status"": True,
+            ""message"": ""Successfully Logged In"",
+            ""access_token"": access_token,
+            ""refresh_token"": refresh_token
+        })
+        # set_access_cookies(response=response, encoded_access_token=access_token)
+        # set_refresh_cookies(response=response, encoded_refresh_token=refresh_token)
+
+        return response
+
+    return {""login_status"": False, ""message"": ""Incorrect credentials""}
+
+","Create a endpoint for /login.
+1. Check if the request is POST, else return Bad request
+2. Get user's email ID and password from the request
+3. Check if the user exists
+4. Verify the user credentials
+5. Once user credentials are verified, set the access and refresh JWT tokens ","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def send_confirmation_email(user_id, confirmation_token, recipient):
+    """"""
+    It sends a confirmation email to a user
+    
+    :param user_id: The ID of the user who is registering
+    :param confirmation_token: This is the token that we generated in the previous
+    step
+    :param recipient: The email address of the user who is registering
+    :return: A boolean value
+    """"""
+    # Checking the type of the arguments that are passed to the function.
+    if not isinstance(user_id, str):
+        raise TypeError(""User ID must be a string"")
+
+    if not isinstance(confirmation_token, str):
+        raise TypeError(""Confirmation token must be a string"")
+
+    if not isinstance(recipient, str):
+        raise TypeError(""Recipient email must be a string"")
+
+    # Creating a message that will be sent to the user.
+    title = ""Please confirm your email""
+    recipients = [recipient]
+    sender = ""no-reply@mailtrap.io""
+    message = f""Please confirm your email address by clicking on the following link - http://localhost:5000/{user_id}/{confirmation_token}""
+
+    msg = Message(subject=title, recipients=recipients, sender=sender)
+    msg.body = message
+
+    # Trying to send the email and if it fails, it will print the error and return
+    # False.
+    try:
+        mail.send(msg)
+        return True
+    except Exception as e:
+        print(e)
+        return False
+","1. Create a function name send_confirmation_email to send the email and the function will take user_id, confirmation_token, recipient as an argument.
+2. At first We will check the passed arguments to the function is string or not if not then raise a TypeError.
+3. Next, create a message that we need to send to the user.
+4. After creating the message template will finally send the email and will use the try/catch block while sending the mail and print the error.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def predict_next_word(string, verbose=True, NUMBER_OF_PREDICTIONS=1):
+    ques_bool = False
+    idx, ques_bool = string_to_indexes(string.split(), ques_bool)
+
+    if len(idx) >= CONFIG.number_of_words:
+        if verbose:
+            print('\nindexes of last ', CONFIG.number_of_words, 'words\t:',
+                  idx[-CONFIG.number_of_words:])
+        prediction = model.predict([[idx[-CONFIG.number_of_words:]]])
+
+        best_predictions = []
+
+        for _ in range(NUMBER_OF_PREDICTIONS):
+            argmax_idx = argmax(prediction[:, CONFIG.number_of_words - 1, :])
+            print(prediction[:, CONFIG.number_of_words - 1, argmax_idx])
+            best_predictions.append(argmax_idx)
+            prediction[:, CONFIG.number_of_words - 1, argmax_idx] = 0.0
+
+        if verbose:
+            print('\nprediction indexes\t:', best_predictions)
+        converted_string = indexes_to_string(best_predictions, ques_bool)
+        sentences = []
+
+        for word in converted_string:
+            sentences.append(string + ' ' + word)
+        return sentences
+    else:
+        print('\n\nPlease enter atleast', CONFIG.number_of_words, ' words.\n')
+","Create a function predict_next_word that will take a string as an argument and predict the next word.
+1. Check if the sentence is a question or not and convert the string into indexes.
+2. Checking if the number of words in the sentence is greater than or equal to the number of words in the model.
+3. Print the last numbers of words and predict the next word
+4. Create an empty list of the best-predicted word.
+5. Iterate and Find the index of the word with the highest probability.
+6. Printing the probability of the word with the highest probability and appending the index of the word with the highest probability to the list of best predictions.
+7. Set the probability of the word with the highest probability to 0.0.
+8. Printing the indexes of the words with the highest probabilities.
+9. Appending the predicted word to the input sentence and return the sentence.
+10. Else Print the error message if the number of words in the input sentence is less than the number of words in the model.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"import requests
+from requests.exceptions import ConnectionError
+
+
+def internet_connection_test():
+	url = 'https://www.google.com/'
+	print(f'Attempting to connect to {url} to determine internet connection status.')
+	
+	try:
+		print(url)
+		resp = requests.get(url, timeout = 10)
+		resp.text
+		resp.status_code
+		print(f'Connection to {url} was successful.')
+		return True
+	except ConnectionError as e:
+		requests.ConnectionError
+		print(f'Failed to connect to {url}.')
+		return False
+	except:
+		print(f'Failed with unparsed reason.')
+		return False
+
+internet_connection_test()
+","Create a function internet_connection_test the function will attempts to connect to the url 
+To do so we make a use of request module
+
+(The requests library is the de facto standard for making HTTP requests in Python. It abstracts the complexities of making requests behind a beautiful, simple API so that you can focus on interacting with services and consuming data in your application.)
+
+1. At first we will store the url in a variable
+2. By using the try catch block we will try to connect to the url using request.get and if the connection is successful will return True with print statement.
+3. In case of the exception first we check ConnectionError if it is then will return the False with print statement.
+(ConnectionError − This will be raised, if there is any connection error. For example, the network failed, DNS error so the Request library will raise ConnectionError exception.)
+
+4. The second exception block is for the general error for that will also return False with print statement.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def ml_model_trainer(
+        dataframe,
+        x_column,
+        y_column,
+        train_ratio,
+        vectorizer_location,
+        preprocessor,
+        model_dir,
+    ):
+        """"""
+        Split a dataframe into train and test sets and save the vectorizer trained
+        on the training data.
+
+        Parameters
+        ----------
+        dataframe (pandas DataFrame) - The main dataframe which contains the data.
+        x_column (str) - Column name for the tweet.
+        y_column (str) - Column name for the output.
+        train_ratio (float) - A number between 0.1 to 0.9 to define the % of data used for training.
+        vectorizer_location (str) - Location where the vectorizer will be saved.
+        preprocessor (callable) - Function to be passed for preprocessing the data.
+        model_dir (str) - Directory path where models will be saved.
+
+        Returns
+        -------
+        None
+        """"""
+        # Models dictionary
+        model_dict = {""Random Forest"": rf, ""Logistic Regression"": lr, ""Gradient Boost"": gb}
+
+        # Get the vectorized data
+        X_train, X_test, y_train, y_test = split_and_vectorize(
+            dataframe, x_column, y_column, train_ratio, vectorizer_location, preprocessor
+        )
+
+        # Oversample the data
+        X_train_ovs, y_train_ovs = ros.fit_resample(X_train, y_train)
+
+        # Iterate over each model, train it, make predictions on test data and check result
+        for model_name, model in model_dict.items():
+            print(f""Training {model_name}"")from sklearn.model_selection import train_test_split
+","The function ml_model_trainer take dataframe, x_column, y_column, train_ratio, vectorizer_location, preprocessor, model_dir as an argument
+1. We will Create the dictionary to save the models
+2. To get the vectorized data we will call another function named split_and_vectorize
+3. To reduce the imbalance in data we use random over sampler and save it to the variable.
+4. Iterate over each model, train it, make predictions on test data and check results.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def validate_confirmation_token(self, token):
+    """"""
+    If the token is less than 24 hours old and the token matches the token in
+    the database, return True
+
+    :param token: The token that was sent to the user's email address
+    :return: True or False
+    """"""
+    # Getting the current timestamp and the timestamp of the token that was
+    # sent to the user's email address.
+    current_timestamp = datetime.now()
+    token_timestamp = self.confirmation_token_time
+
+    # Getting the difference between the current timestamp and the timestamp
+    # of the token that was sent to the user's email address. It is then
+    # dividing the difference by 60*60 to get the difference in hours.
+    diff = (current_timestamp - token_timestamp).total_seconds() / (60*60)
+
+    # Checking to see if the token is less than 24 hours old and if the
+    # token matches the token in the database.
+    if diff <= 24 and token == self.confirmation_token:
+    return True
+    return False","1. Create a method validate_confirmation_token 
+2. Getting the current timestamp and the timestamp of the token that was sent to the user's email address and store in a variable.
+3. Getting the difference between the current timestamp and the timestamp of the token that was sent to the user's email address. It is then dividing the difference by 60*60 to get the difference in hours.
+4. Next step is to see if the token is less than 24 hours old and if the token matches the token in the database if yes return True else return False.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def reorder_columns(df, expected_columns):
+    """"""Reorders columns in the given dataframe
+
+    Args:
+        df (pandas.DataFrame)
+        expected_columns (list): List of required column headers
+
+    Returns:
+        pandas.DataFrame
+    """"""
+    return df.reindex(expected_columns, axis=1)
+","Create the function reorder_columns
+The function will reorders the columns in the given dataframe using reindex (reindex is a defined method of dataframe)","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@classmethod
+def get_verifiers(cls, project_id):
+    annotators = []
+    users = UserRole.query.filter_by(
+    project_id=project_id, role=Role.verifier.value
+    )
+    for user in users:
+    user = User.query.filter_by(
+    user_id=user.user_id
+    ).first()
+    annotators.append(user.name)
+
+    return annotators","Create a classmethod get_verifiers that returns the list of all verifiers in a particular project
+
+1. Create an empty list to store the verifiers 
+2. Then query the UserRole database and save the result in the variable.
+3. Once we get the verifier then will iterate and query the User database to get the user_id and append to the list and returns the list","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def convert_xml_to_json(file):
+    with open(file) as xml_file:
+        parsed_data = xmltodict.parse(xml_file.read())
+
+        xml_file.close()
+
+        json_conversion = json.dumps(parsed_data)
+
+        with open('output.json', 'w') as json_file:
+            json_file.write(json_conversion)
+
+            json_file.close()","Create a function convert_xml_to_json that will take the file as an argument and convert the XML file to a JSON file 
+
+1. Opening the file and reading it and parsing the XML file and converting it to a dictionary and then closing the file.
+2. And now, Converting the parsed data into a JSON format.
+3. Open the JSON file and write the json format parsed data, then close the file.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def drop_columns(df, columns):
+    """"""Drops given columns from the given dataframe
+
+    Args:
+        df (pandas.DataFrame)
+        columns (list)
+
+    Returns:
+        pandas.DataFrame: Excluding the given columns
+    """"""
+    df.drop(columns, axis=1, inplace=True)
+    return df","Create a method drop_columns that will take the dataframe and column name as an argument and drop thecolumns of the given dataframe and returns the dataframe.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"# Seperators for date
+seperators_ls = [""/"", ""-""]
+seperators_string = ""|"".join(seperators_ls)
+
+# Format for dates
+dd_mm_yy = r""\d\d\s*({})\s*\d\d({})\s*\d\d"".format(seperators_string, seperators_string)
+dd_mm_yyyy = r""\d\d\s*({})\s*\d\d({})\s*\d\d\d\d"".format(
+    seperators_string, seperators_string
+)
+
+like_date = f""{dd_mm_yyyy}|{dd_mm_yy}""
+
+# Mentions pattern
+like_mentions = r'@[a-z0-9_]+'
+
+regular_links = r""http(s){0,1}://(\w|\d|-|_|\.)+""
+short_links = r""t.co(\w|\d|-|_|\.|/)+""
+
+like_link = f""{regular_links}|{short_links}""
+
+# Pattern replace list
+pattern_replace_ls = [
+(like_date, ""_date_""),
+(like_link, ""_link_""),
+(like_mentions, ""_user_""),
+]
+
+def replace_patterns(tweet):
+    text = tweet.lower()
+
+    for pat, norm_text in pattern_replace_ls:
+        text = re.sub(pat, norm_text, tweet, flags=re.I | re.M)
+
+    return text","instructions:
+
+1. For dates, we will replace the 2 most common patterns - dd_mm_yyyy and dd_mm_yy. Let's add patterns for dates.
+
+2.  Identify usernames using regular expressions
+   The usernames in Twitter are in the form of mentions which start with  @ followed by the actual user name. So the pattern will identify all the words that start with  @.
+
+3. Identify links using regular expressions
+      Links are either in form of a regular link which starts with either an  http://  or an https://. There are other short links too which usually start with t.co. These are the 3 instances we will cover here.
+
+4. Identify and replace patterns and return the tweet as lower case text
+   In this step we are going to utilize the patterns created and write a function that takes raw tweets as input and outputs the pre-processed text.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"class Library:
+
+   def __init__(self, books):
+       self.books = books
+
+def show_avail_books(self):
+    print('Our Library Can Offer You The Following Books:')
+    print('================================================')
+    for book, borrower in self.books.items():
+        if borrower == 'Free':
+            print(book)","Create a class Library and define a constructor and pass books as an argument.
+
+Create a method show_avail_books inside the class to show the availability of books
+1. Iterate through the dictionary pf books and check if the borrower is free then print the book
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def calculateDivisors (A, B):
+    """"""
+    It takes in a dataframe, replaces missing values with NaN, codes gender and target, and creates a single
+    column for capital wealth, and removes excess columns.
+    
+    :param data: The dataframe to be processed
+    :return: A dataframe with the columns: age, education_num, hours_per_week, female, target, capital,
+    and the dummies for the columns: workclass, marital_status, relationship, native_country
+    """"""
+    N = A - B
+    noOfDivisors = 0
+     
+    a = math.sqrt(N)
+    for i in range(1, int(a + 1)):
+        # if N is divisible by i
+        if ((N % i == 0)):
+            # count only the divisors greater than B
+            if (i > B):
+                noOfDivisors +=1
+            if ((N / i) != i and (N / i) > B):
+                noOfDivisors += 1; 
+    return noOfDivisors","Create a function calculateDivisors that will take 2 numbers as an argument and return the calculated divisor.
+1. Declare N (N is a difference between A and B) and a number of the divisor is 0.
+2. Finding the square root of N using the sqrt function of the math module and then looping through the range of 1 to the square root of N.
+3. If N is divisible by i count only the divisors greater than B
+4. Check if a divisor is not counted twice
+5. At lat return the number of the divisor.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def assign_sentiment_score(self, sentiment):
+    """"""Assign a score based on sentiment. +1 for positive, -1 for negative and 0 for neutral
+
+    Parameters
+    ----------
+        sentiment (str) - The actual sentiment
+
+    Returns
+    -------
+        (int) - Score on the basis of sentiment
+    """"""
+    if sentiment.lower().strip() == ""positive"":
+        return 1
+    elif sentiment.lower().strip() == ""negative"":
+        return -1
+
+    return 0","Create a function assign_sentiment_score to calculate the total score of an airline based on the predicted sentiments. The logic is to assign a score of +1 to Positive, -1 to Negative, and 0 for Neutral and sum them all up.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def monthly_automated_report():
+    """"""Run the report generation automatically every month.""""""
+    today = datetime.now()
+
+    # Run the file if its the third of the month
+    if today.day == 3:
+        # Set the filename as mm_yyyy_report.csv
+        this_month = str(today.month)
+        if len(this_month) == 1:
+            this_month = ""0"" + this_month
+
+        this_year = str(today.year)
+
+        filename = f""{this_month}_{this_year}_report.csv""
+
+        # Initialize SentimentPredictor
+        sp = SentimentPredictor()
+
+        report = sp.generate_monthly_report(filename)
+
+        return report
+","1. Import required packages
+2. Create a function that does not require any input and run it on the condition that the current date is 3rd
+3. Use the datetime module to generate the filename in the mm_yyyy_report format. You can use the current month and year, as well as these reports, need to be manually emailed
+4. Initialize SentimentPredictor
+5. Generate a report using the generate_monthly_report  method. This will also automatically save the report in the reports directory
+6. Initialize the scheduler outside the function created
+7. Make the scheduler run daily at noon (As mentioned earlier this library comes with its limitation but makes the scheduling easy and pythonic)
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@home_blueprint.route(""/reset-password"", methods=[""POST""])
+def reset_password():
+    """"""
+    It takes in a JSON object with an email address and a password, and then it
+    updates the password of the user with that email address
+    :return: A dictionary with a status and message.
+    """"""
+    data = request.get_json()
+
+    email = data[""email_address""]
+    password = data[""password""]
+
+    # Checking if the email address is already in the database.
+    usr = UserInfo.query.filter_by(email_address=email).first()
+    
+    # Checking if the user exists in the database. If the user exists,
+    #         it gets the user_id of the user.
+    if usr:
+        uid = usr.user_id
+
+        usr_login = UserLogin.query.filter_by(user_id=uid).first()
+
+        res = usr_login.update_password(password)
+
+        if res:
+            return {""status"": True, ""message"": ""Password reset successfully""}
+
+        return {""status"": False, ""message"": ""Unable to reset password""}
+
+    return {""status"": False, ""message"": ""Unable to reset password""}
+
+","Create an endpoint /reset-password that takes in a post request and fetches user's email address and new password from it. It should load the user object and update the password and return the status.
+1. Getting the email address and password from the JSON object that was sent in the request.
+2. Query the database and check if the user exist in the database or not if user exists gets the user_id of the user and update the passowrd by calling the method.
+3. Check if the password was updated successfully. If it was returns true along with message else return False along with message.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_topics(self):
+    """"""scrape the link and
+
+    Returns:
+    list: returns the list of topics and links
+    """"""
+    # Getting the list of topics and links from the investopedia website.
+    topics = []
+    # Iterating through the alphabet.
+    for alphabet in list(string.ascii_lowercase):
+    r = requests.get(""https://www.investopedia.com/terms/{}/"".format(alphabet))
+    # Parsing the html text.
+    soup = BeautifulSoup(r.text, ""html5lib"")
+
+    # This is a try except block. It is trying to find the last page
+    # number of the topic. If it is not able to find it, it will set the
+    # page number to 1.
+    try:
+    page = (
+    soup.find(""li"", {""class"": ""pager-last last""})
+    .find(""a"")[""href""]
+    .split(""="")[1]
+    )
+
+    except:
+    page = 1
+    pass
+    # This is a for loop that is iterating through the pages of the
+    # investopedia website.
+    for page_number in range(0, int(page)):
+    try:
+    r = requests.get(
+    f""https://www.investopedia.com/terms/{alphabet}/?page={page_number}""
+    )
+    encoding = (
+    r.encoding
+    if ""charset"" in r.headers.get(""content-type"", """").lower()
+    else None
+    )
+    soup = BeautifulSoup(r.content, ""html5lib"", from_encoding=encoding)
+
+    except Exception as e:
+    print(f""error while getting the info {e}"")
+    pass
+
+    # This is a for loop that is iterating through the pages of the
+    #             # investopedia website.
+    sub_topics = []
+    for st in soup.find_all(
+    ""a"", {""class"": ""dictionary-top300-list__list mntl-text-link""}
+    ):
+    link = st.get(""href"")
+    topic_name = st.text.strip()
+    sub_topics.append(f""{topic_name} | {link}"")
+    topics += sub_topics
+    return topics
+","2. Create a method get_topics(). It will extract all the terms from Investopedia. Investopedia has a page on which it has a list of terms that the function scrape and saves their title and link.
+3. Scrape the required data using Beautiful Soup by following these steps:
+   1. Create an empty list and save it to a variable called topics
+   2. Iterate through all the characters in the alphabet by extracting it from list(string.ascii_lowercase)
+   3. Get the terms starting with the character from the link https://www.investopedia.com/terms/{character}/ by using get method from requests
+   4. Extract the text of the get request by using BeautifulSoup
+   5. Find a number of pages for topics starting with the character. Use try-except block to set the number of pages to 1 if an error occurs
+   6. Create a loop that iterates through all the pages and save the results to a variable called sub_topics
+   7. Keep appending the results to topics and return topics","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@classmethod
+    def get_annotators(cls, project_id):
+    """"""Returns a list of annotators for the given project.
+
+    Args:
+    project_id (str): Unique id of the project
+
+    Returns:
+    list: List of name of the annotators.
+    """"""
+    annotators = []
+    users = UserRole.query.filter_by(
+    project_id=project_id, role=Role.annotator.value
+    )
+    for user in users:
+    user = User.query.filter_by(
+    user_id=user.user_id
+    ).first()
+    annotators.append(user.name)","Create a classmethod get_annotators thus function will returns the list of the annotators from our database to do so.
+1. Create an empty list
+2. Then will query our database the first entry that will get we will append in our empty list and returns the list.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def __read_data(self, file_name):
+        """"""Reads CSV file from the given location, loads it to a pandas 
+        dataframe and returns it.
+
+        Args:
+            file_name (str): Name of the CSV file
+
+        Returns:
+            padas.DataFrame
+        """"""
+        file_path = self.__get_file_path(file_name)
+
+        # Check if file exists
+        if not isfile(file_path):
+            return None
+
+        df = pd.read_csv(file_path)
+        return df","Create a private method __read_data
+
+The method will take the file_name as an argument and returns the dataframe
+1. To get the file pah call private method __get_file_path and passed the filename as an argument
+2. If file exist call the method read_csv to read the file and return the dataframe.
+3 . If file not exist return None.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def perform_sanity_checks(df):
+    """"""Performs sanity checks on the given dataframe.
+
+    Args:
+        df (pandas.DataFrame): Dataframe to check
+
+    Returns:
+        pandas.DataFrame if successful, otherwise None
+    """"""
+
+    # Removing white space from column headers
+    df.columns = df.columns.map(lambda x: x.strip())
+
+    df_columns = df.columns.to_list()
+
+    # Drop extra columns
+    expected_columns = [
+        ""Date"", ""Transaction Remark"", ""Debit"", ""Credit"", ""Balance""
+    ]
+    extra_columns = [
+        col for col in df_columns if col not in expected_columns
+    ]
+    if extra_columns:
+        df = drop_columns(df, extra_columns)
+        df_columns = df.columns.to_list()
+
+    # Check the number of columns
+    if not compare_column_count(expected_columns, df_columns):
+        return None
+
+    # Check the order of columns
+    if not compare_column_order(expected_columns, df_columns):
+        # Rearrage columns of order not as expected
+        df = reorder_columns(df, expected_columns)
+
+    # Check datatype for Transaction Remark
+    df = process_txn_remark(df)
+    if not isinstance(df, pd.DataFrame):
+        return None
+
+    def = process_amount_for_bank(df)
+    if not isinstance(df, pd.DataFrame):
+        return None
+
+    return df
+","Create a function perform_sanity_checks to perform the checks on given dataframe to do so
+1. Removing white space from column headers using the lambda and map function and convert into list and save in variable
+2. Make a list of columns we want iterate in a list and drop the extra columns and check the number of columns and also check the order of the columns
+3. Rearrange columns of order and check the datatype for Transaction Remark next will call the another function and save in a variable 
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def __common_checks(self, df, expected_columns):
+    """"""Perform checks which are common to all the source types
+
+    Args:
+    df (pandas.DataFrame)
+    expected_columns (list): List of expected column headers in the 
+    given dataframe
+
+    Returns:
+    pandas.DataFrame if successful, otherwise None
+    """"""
+
+    # Removing white space from column headers
+    df.columns = df.columns.map(lambda x: x.strip())
+
+    df_columns = df.columns.to_list()
+
+    # Drop extra columns
+    extra_columns = [
+    col for col in df_columns if col not in expected_columns
+    ]
+    if extra_columns:
+    df = drop_columns(df, extra_columns)
+    df_columns = df.columns.to_list()
+
+    # Check the number of columns
+    if not compare_column_count(expected_columns, df_columns):
+    return None
+
+    # Check the order of columns
+    if not compare_column_order(expected_columns, df_columns):
+    # Rearrage columns of order not as expected
+    df = reorder_columns(df, expected_columns)
+
+    return df
+","Create a private method __common_checks that perform the check to all the source of data 
+
+1. Removing the blank space from column header and convert the panda series into the list using the to_list function of python dataframe.
+2. Then check the number of columns in the dataframe.  If there is any extra column remove the extra columns by calling the drop_columns function
+3. Then will check number and order of column using compare_column_count and compare_column_order function.
+4. At last check the order of columns by calling compare_column_order function if it is not as expected then rearrange using the reorder_column function and return the dataframe.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def test_proxy(proxy_type: str, proxy_address: str, iptest: str):
+    '''This function takes a proxy (type, address)
+    and tests it against a given iptest adress.'''
+
+    logging.info(f'Testing proxy: {proxy_address}')
+
+    try:
+        proxies = {proxy_type: proxy_address}
+        proxy_status: str = ''
+
+        if proxy_type == 'https':
+            r = requests.get(f'https://{iptest}', proxies=proxies)
+        else:
+            r = requests.get(f'http://{iptest}', proxies=proxies)
+
+        try:
+            json_response: dict = r.json()
+
+            if json_response[""ip""] in proxy_address:
+                proxy_status = 'Proxy functional'
+            else:
+                logging.warning(f'Proxy ""{proxy_address}""'
+                                f'returned {json_response}')
+                proxy_status = 'Proxy not functional'
+        except JSONDecodeError:
+            proxy_status = 'Invalid response'
+    except ProxyError:
+        proxy_status = 'Proxy error'
+
+    logging.info(f'Proxy {proxy_address}: {proxy_status}')
+    return {'proxy_type': proxy_type,
+            'proxy_address': proxy_address,
+            'proxy_status': proxy_status}
+","1. Logging the proxy address to the console by using the info function of the login module.
+2. In a try block set up the proxy and the status.
+3. Checking if the proxy type is https or not. If it is, it will use https, otherwise, it will use http.
+4. In another try block Try to get the json response from the request.
+5. Checking if the IP address returned by the proxy is the same as the IP address of the proxy.
+6. If the proxy is not functioning will use the warning function of the logging module along with the print statement.
+7. In two except blocks will raise a JSONDecodeError and ProxyError respectively.
+
+(JSONDecodeError = A Python JSONDecodeError indicates there is an issue with how your JSON data is formatted.)
+(ProxyError = Briefly, a proxy server error is an HTTP error status. It occurs when the request you sent to a web server via a proxy server doesn't succeed.)
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@project_blueprint.route(""/projects/new-project"", methods=[""GET"", ""POST""])
+def new_project():
+
+    if request.method == ""POST"":
+        # Getting variables from form
+        title = request.form[""title""]
+        summary = request.form.get(""summary"")
+        instructions = request.form.get(""instructions"")
+        image_csv = request.files[""image_csv""]
+        categories_csv = request.files[""categories_csv""]
+
+        # Create new project
+        project_id = Project.create(
+            title=title,
+            project_owner=session[""user_id""],
+            summary=summary,
+            instructions=instructions,
+        )
+
+        if project_id:
+            # Save image s3 path to database
+            s3_paths = process_csv_data(image_csv)
+            Image.create_many(s3_paths, project_id)
+
+            # Save categories to database
+            categories = process_csv_data(categories_csv)
+            Category.create_many(categories, project_id)
+
+        return redirect(url_for(""project.new_project""))
+
+    return render_template(""new_project.html"")
+
+","Create a new controller for /projects/new-project endpoint for both GET and POST method.
+1. At first we check if the the method is POST or not . If the method is POST then take a variable from the form 
+2. Next step will create a new project and save the image in the s3 path and categories to the database and return to the project.new_project page.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"class UserRole(db.Model):
+    __tablename__ = ""user_roles""
+
+    uuid = db.Column(db.String(10), primary_key=True)
+    user_id = db.Column(db.String(10), db.ForeignKey(""users.user_id""))
+    project_id = db.Column(db.String(10), db.ForeignKey(""projects.project_id""))
+    role = db.Column(db.Enum(Role))
+    create_ts = db.Column(
+        db.DateTime(timezone=True), server_default=func.now()
+    )
+
+    def __repr__(self):
+        return f""<UserRole: {self.uuid}>""","Create a class `UserRole` that represents the `user_roles` table in the database. This is done because we are using the sqalchemy ORM.
+The code illustrates the creation of a database table that will hold user roles.
+
+The header of the columns are as follows: uuid, user_id, project_id, role, create_ts
+1. Defines the columns of the table and set the uuid as primary_key is True
+(A primary key, also called a primary keyword, is a column in a relational database table that's distinctive for each record.)
+2. user_id column related to the primary_key of the users table so we make it as a foreignkey   
+(A foreign key is a column (or combination of columns) in a table whose values must match values of a column in some other table)
+3. project_id column related to the primary_key of the project table so we make it as a foreign key
+4. In role column  make a use of Role class
+5. In create_ts column we have imported the DateTime to track the time 
+6. The __repr__ method is then defined which returns the string representation of uuid.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def chatGPT_main(config):
+    print(""Logging in..."")
+    chatbot = Chatbot(config)
+    while True:
+        prompt = get_input(""\nYou:\n"")
+        if prompt.startswith(""!""):
+            if prompt == ""!help"":
+                print(
+                    """"""
+                !help - Show this message
+                !reset - Forget the current conversation
+                !refresh - Refresh the session authentication
+                !config - Show the current configuration
+                !rollback x - Rollback the conversation (x being the number of messages to rollback)
+                !exit - Exit the program
+                """""",
+                )
+                continue
+            elif prompt == ""!reset"":
+                chatbot.reset_chat()
+                print(""Chat session reset."")
+                continue
+            elif prompt == ""!refresh"":
+                chatbot.refresh_session()
+                print(""Session refreshed.\n"")
+                continue
+            elif prompt == ""!config"":
+                print(json.dumps(chatbot.config, indent=4))
+                continue
+            elif prompt.startswith(""!rollback""):
+                # Default to 1 rollback if no number is specified
+                try:
+                    rollback = int(prompt.split("" "")[1])
+                except IndexError:
+                    rollback = 1
+                chatbot.rollback_conversation(rollback)
+                print(f""Rolled back {rollback} messages."")
+                continue
+            elif prompt.startswith(""!setconversation""):
+                try:
+                    chatbot.config[""conversation""] = prompt.split("" "")[1]
+                    print(""Conversation has been changed"")
+                except IndexError:
+                    print(""Please include conversation UUID in command"")
+                continue
+            elif prompt == ""!exit"":
+                break
+        try:
+            print(""Chatbot: "")
+            message = chatbot.ask(
+                prompt, conversation_id=chatbot.config.get(""conversation""))
+            print(message[""message""])
+        except Exception as exc:
+            print(""Something went wrong!"")
+            print(exc)
+            continue
+","Create a function chatGPT_main
+1. The function starts by printing ""Logging in...""
+2. Then, it creates a Chatbot object and assigns the configuration to it.
+3. The while loop starts when the user types !help or !reset or !refresh into the chat window.
+4. The code then checks if the prompt is starting with an exclamation point (!) and if so, executes one of three commands: help, reset, refresh.
+5. Default to 1 rollback if no number is specified with print statement.
+6. Else in try block will try to print the message from bot by calling the ask method and print the message. If any error occur it'll be catch in the except statement along with print statement.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@staticmethod
+    def generate_hash(password, salt, hash_id):
+        """"""
+        It takes a password, salt, and hash_id as arguments, and returns a hashed
+        password
+        
+        :param password: The password to be hashed
+        :param salt: A random string of characters that is used to make the password
+        more secure
+        :param hash_id: This is the id of the hashing algorithm you want to use
+        :return: The hashed password is being returned.
+        """"""
+
+        hashed_password = None
+
+        # Getting the hashing algorithm object from the database.
+        hash_obj = HashingAlgorithms.query.filter_by(hash_id=hash_id).first()
+        
+        # Getting the hashing algorithm object from the database.
+        if hash_obj:
+            hash_algo = hash_dict[hash_obj.algorithm]
+            hashed_password = hash_algo.hash(password + salt)
+
+        return hashed_password","Create a staticmethod to generate the hash of the password which takes the text password, salt, and hash_id as arguments, and returns the hashed password. Sale will be generated by us using nanoid's generate function. Take the following steps to create this function:
+   1. Create a dictionary that has the hashing algorithms as keys and the hashing algorithm objects as values.
+   2. Create a variable called hashed_password with None as the value.
+   3. Get the hashing algorithm name from the database and match it against the dictionary created.
+   4. If the hash object is found, then append salt to the password, generate the hash and update the hashed_password else leave the hashed_password to None.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def send_mail():
+    # Creating a connection to the SMTP server, getting the credentials from the file, and logging in
+    # to the server.
+    s = smtplib.SMTP(""smtp.gmail.com"", 587)
+    email_address, email_pass = get_credentials(""./credentials.txt"")
+    login(email_address, email_pass, s)
+
+    # message to be sent
+    subject = ""Welcome to Python""
+    body = """"""Python is an interpreted, high-level,
+    general-purpose programming language.\n
+    Created by Guido van Rossum and first released in 1991,
+    Python's design philosophy emphasizes code readability\n
+    with its notable use of significant whitespace""""""
+
+    # Creating an email message with the given body and subject.
+    message = EmailMessage()
+# It sets the content of the message to the given body.
+    message.set_content(body)
+    message['Subject'] = subject
+
+   # Opening the file emails.csv, reading the emails from it, and sending the message to each email.
+    with open(""emails.csv"", newline="""") as csvfile:
+        spamreader = csv.reader(csvfile, delimiter="" "", quotechar=""|"")
+        for email in spamreader:
+            s.send_message(email_address, email[0], message)
+            print(""Send To "" + email[0])
+
+    # terminating the session
+    s.quit()
+    print(""sent"")","Create function send_mail 
+1. The code then creates a new SMTP object and sets its host to ""smtp.gmail.com"".
+2. Next step get the credential to do so will call the function get_credential and pass the credential file next will log in by calling the login function.
+3. Write the subject and the body of your mail that you want to send to the user.
+4. Create an email message with a given body and subject.
+5. And after that set the content and subject of the message to the given subject.
+6. Open a CSV file using the CSV reader class's method read().
+7. Iterate the file and read the emails from the file and send the mail to each email.
+8. Terminate the session with a print statement.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def binary_search(a_list, an_item):
+   first = 0
+   last = len(a_list) - 1
+
+   while first <= last:
+       mid_point = (first + last) // 2
+       if a_list[mid_point] == an_item:
+           return True
+       else:
+           if an_item < a_list[mid_point]:
+               last = mid_point - 1
+           else:
+               first = mid_point + 1
+   return False","Create a function binary_search that will take list and item as argument and return True if the item is in the list else return False.
+1. Set the first and last index of the list.
+2. In while loop check if the item is in the list.
+3. Find the middle point of the list and check if the item is in the list. If it is return True.
+4. If the item is not in the list, it is checking if the item is less than the middle point. If it is, it is setting the last index to the middle point minus one.
+5. Else set the first index to the middle point plus one.
+6. Return False if the item is not in the list.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def split_and_vectorize(
+    dataframe, x_column, y_column, train_ratio, vectorizer_location, preprocessor
+):
+    """"""
+    Split a dataframe into train and test sets and save the vectorizer trained
+    on the training data
+
+   
+    """"""
+
+    # Step 1 - Split the data into X (features) and y (target)
+    X = dataframe[x_column]
+    y = dataframe[y_column]
+
+    # Step 2 - Split X & y into training and testing subsets as per the train_ratio
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=train_ratio)
+
+    # Step 3 - Initialize and train the vectorizer
+    cv = CountVectorizer(preprocessor=preprocessor)
+    X_train_vect = cv.fit_transform(X_train)
+
+    # Step 4 - Save the vectorizer in the VECT_DIR
+    with open(vectorizer_location, ""wb"") as f:
+        pickle.dump(cv, f)
+
+    # Step 5 - Transform the test data as per the CountVectorizer
+    X_test_vect = cv.transform(X_test)
+
+    # Step 5 - Return the vectorized train and test data
+    return X_train_vect, X_test_vect, y_train, y_test
+","First will add the necessary import in the first line.
+1. Create a function name split_and_vectorizer this function will take dataframe, x_column, y_column, train_ratio, vectorizer_location, preprocessor as an argument. The function will Split a dataframe into train and test sets and save the vectorizer trained on the training data.
+then will Initialize and train the vectorizer and save the vectorizer in variable and transform the test data as per the CountVectorizer.
+2. Atlast returns the vectorized trained and test data","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def read(self):
+    """"""read the text file
+
+    Returns:
+        list: returns the strings of the list
+    """"""
+    try:
+        with open(data_file_path, 'r') as file:
+            return file.read().splitlines()
+    except Exception as e:
+        print(f""error while reading the content from the text file {e} "")
+        return []","Create a method read
+This method will read the file using the open in read mode. We are saving each topic on a new line, use splitlines to split them and save as a list.
+Will make a use of exception handling to handle if any error occur","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"class SentimentPredictor:
+
+    def __init__(self, vectorizer_path=VECT_LOC, model_path=MODEL_LOC):
+        """"""Initialize the class.
+
+        Parameters
+        ----------
+            vectorizer_path (str, optional) - Location where vectorizer is saved. Defaults to VECT_LOC.
+            model_path (str, optional) - Location where the model is saved. Defaults to MODEL_LOC.
+        """"""
+        self.vectorizer_path = vectorizer_path
+        self.model_path = model_path
+        self.vectorizer, self.model = self.load_vectorizer_and_model()","Create a class name SentimentPredictor. The constructor of the class takes two arguments vectorizer_path and model_path.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def confirm_token(user_id, token):
+    """"""
+    It takes in a user_id and a token, checks if the user exists if the user
+    exists, it checks if the token is valid, and if the token is valid, it updates the
+    user's email_verified column to True and returns a message
+    
+    :param user_id: The user_id of the user who is trying to verify their email
+    :param token: The token that was sent to the user's email address
+    :return: A dictionary with two keys, token_verified and message.
+    """"""
+    # Checking if the user exists and if the token is valid.
+    user = UserLogin.query.filter_by(user_id=user_id).first()
+
+    if not user:
+        return {""token_verified"": False, ""message"": ""User does not exist""}
+
+    token_confirm = user.validate_confirmation_token(token)
+
+    # Updating the user's email_verified column to True.
+    if token_confirm:
+        try:
+            user.update({""email_verified"": True})
+            db.session.commit()
+            return {""token_verified"": True, ""message"": ""Email verified""}
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return {""token_verified"": False, ""message"": ""Unable to verify email""}
+
+    return {""token_verified"": False, ""message"": ""Unable to verify email""}
+
+","1. Check if the user exists and if the token is valid or not to do so will call another function.
+2. If the token is valid update the user's email_verified column to True.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@classmethod
+def get_user_role(cls, user_id, project_id):
+    """"""Returns role of the user for the given project.
+
+    Args:
+    user_id (str): Unqiue id of the user
+    project_id (str): Unique id of the project
+
+    Returns:
+    str: Role of the user
+    """"""
+    response = UserRole.query.filter_by(
+    user_id=user_id, project_id=project_id
+    ).first()
+    if not response:
+    return None
+
+    return response.role.value
+","Create a function get_user_role to get the role of the user
+1. Query the UserRole database and save the result in variable and return the role of the user.
+2. If the user_id and project_id is not found in the database return None.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def process_amount_for_admin_pool(df):
+    """"""Cleans ""Amount"" column ie removes ""Rs"", "","" and
+    converts to float.
+
+    Args:
+        df (pandas.DataFrame)
+
+    Returns:
+        pandas.DataFrame
+    """"""
+    df[""Amount""] = df[""Amount""].map(get_clean_amount)
+    return df","Create a function process_amount_for_admin_pool the function will clean the Amount column ie removes ""Rs"", "","" and converts to float
+To do so will call the another function get_clean_amount and use the map function on it and return the df","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def sql(sqlstr):  # Definition of an ExecuteSQL Function
+    conn = pymysql.connect(host=ini.get('db', 'host'), user=ini.get('db', 'username'),
+                           password=ini.get('db', 'password'), database=ini.get('db', 'database'))
+    cursor = conn.cursor()
+    cursor.execute(sqlstr)
+    results = cursor.fetchall()  # get all records of query
+    cursor.close()
+    conn.close()
+    return results","It connects to the database, executes the SQL statement, and returns the results.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"
+class Split_Files:
+    '''
+        Class file for split file program
+    '''
+    def __init__(self, filename, split_number):
+        '''
+            Getting the file name and the split index
+            Initializing the output directory, if present then truncate it.
+            Getting the file extension
+        '''
+        self.file_name = filename
+        self.directory = ""file_split""
+        self.split = int(split_number)
+        if os.path.exists(self.directory):
+            shutil.rmtree(self.directory)
+        os.mkdir(self.directory)
+        if self.file_name.endswith('.txt'):
+            self.file_extension = '.txt'
+        else:
+            self.file_extension = '.csv'
+        self.file_number = 1
+
+    def split_data(self):
+        """"""
+        The function takes a file name, a directory, a file extension, and a number of lines to split
+        the file by. It then reads the file, splits it into chunks of the specified number of lines, and
+        saves each chunk as a new file in the specified directory
+        """"""
+        '''
+            spliting the input csv/txt file according to the index provided
+        '''
+        data = pd.read_csv(self.file_name, header=None)
+        data.index += 1
+
+        split_frame = pd.DataFrame()
+        output_file = f""{self.directory}/split_file{self.file_number}{self.file_extension}""
+
+        for i in range(1, len(data)+1):
+            split_frame = split_frame.append(data.iloc[i-1])
+            if i % self.split == 0:
+                output_file = f""{self.directory}/split_file{self.file_number}{self.file_extension}""
+                if self.file_extension == '.txt':
+                    split_frame.to_csv(output_file, header=False, index=False, sep=' ')
+                else:
+                    split_frame.to_csv(output_file, header=False, index=False)
+                split_frame.drop(split_frame.index, inplace=True)
+                self.file_number += 1
+        if not split_frame.empty:
+            output_file = f""{self.directory}/split_file{self.file_number}{self.file_extension}""
+            split_frame.to_csv(output_file, header=False, index=False)
+","Create a class Split_Files and create a constructor and pass the filename and split_number as an argument.
+In the constructor assign the value of the variable and create a directory.
+2. Check if the directory exists and if it does it deletes it.
+3. This is checking if the file name ends with .txt, and if it does, it assigns the file extension to .txt.
+
+Create a function split_data that will read the file and split it into chunks of the specified number of lines.
+1. Read the CSV file and add 1 to the index of the dataframe.
+2. Creating a dataframe and it is creating a file.
+3. This is creating a for loop that is going through the dataframe, and it is appending the dataframe to the split_frame dataframe.
+4. This is checking if the split_frame dataframe is empty, and if it is not, it is creating a file called output_file, and it is saving the split_frame dataframe to the output_file.
+    ","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def encrypt_file(path):
+    # get the plaintext
+    with open(path) as f:
+        plain_text = f.read()
+
+    # The key length must be 16 (AES-128), 24 (AES-192), or 32 (AES-256) Bytes.
+    key = b'this is a 16 key'
+
+    iv = Random.new().read(AES.block_size)
+    mycipher = AES.new(key, AES.MODE_CFB, iv)
+    ciphertext = iv + mycipher.encrypt(plain_text.encode())
+
+    # output
+    with open(path + "".bin"", ""wb"") as file_out:
+        file_out.write(ciphertext[16:])","Create a function encrypt_file, It takes the file as an argument.
+1. Open the file at the path given, reads it, and store the contents in the variable.
+2. Create a key for encryption.
+3. Creating a random initialization vector (IV) for the encryption and using the AES algorithm to encrypt the plain text.
+4. Next step Create a new cipher object and encrypt the text.
+5. Opening the file in ""wb"" mode at the path given, and writing the encrypted text to the file.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def compare_column_count(expected_columns, actual_columns):
+    """"""Checks if both the given list have the same number of elements
+
+    Args:
+        expected_columns (list): List of required column headers
+        actual_columns (list): Column headers of the dataframe
+
+    Returns:
+        bool
+    """"""
+    return len(actual_columns) == len(expected_columns)","Create a method compare_column_count 
+1. The function will take a list of expected_columns and actual_columns as an arguments and also check if the given list have the same number of element by using the len function","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"class FrameCapture:
+    '''
+        Class definition to capture frames
+    '''
+    def __init__(self, file_path):
+        '''
+            initializing directory where the captured frames will be stored.
+            Also truncating the directory where captured frames are stored, if exists.
+        '''
+        self.directory = ""captured_frames""
+        self.file_path = file_path
+        if os.path.exists(self.directory):
+            shutil.rmtree(self.directory)
+        os.mkdir(self.directory)
+
+    def capture_frames(self):
+        '''
+            This method captures the frames from the video file provided.
+            This program makes use of openCV library
+        '''
+        cv2_object = cv2.VideoCapture(self.file_path)
+
+        frame_number = 0
+        frame_found = 1
+
+        while frame_found:
+            frame_found, image = cv2_object.read()
+            capture = f'{self.directory}/frame{frame_number}.jpg'
+            cv2.imwrite(capture, image)
+
+            frame_number += 1
+","Create a class FrameCapture and its constructor pass the file path as an argument.
+1. Inside the constructor initialize the directory where the captured frames will be stored.
+2. Also truncate the directory where captured frames are stored, if exist.
+3. Checking if the directory exists and if it does, it deletes it and creates a new one.
+
+Create a method capture_frames this method captures the frames from the video file provided.
+1. Creating an object of the class VideoCapture from the cv2 library.
+2. initializing the frame number and frame found.
+3. This is a while loop that is reading the frames from the video file and saving them in the directory.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_topics_and_save(self):
+        """"""the function will load the topics .
+
+        Returns:
+            list: returns the list of the topics.
+        """"""
+        topics = []
+        
+        wiki_data = WikiScraper().get_topics(""finance"")
+        investo_data = InvestopediaScrape().get_topics()
+
+        # saves the data in the topics 
+        topics = wiki_data + investo_data
+
+        # check if the folder exist or not
+        isExist = os.path.exists(file_path)
+
+        # if not exist make one
+        if not isExist:
+            os.makedirs(topic_folder_path)
+            print(""new directory created succesfully"")
+
+        # iterating the list
+        with open(file_path, 'w', newline='') as myfile:
+
+            myfile.write(""\n"".join(topics))
+            myfile.close()
+        return True","Create a method get_topics_and_save. It does not take any argument. Here is the logic for the method:
+   1. It creates an empty list to save the topics.
+   2. In the try block call the get_topics() method from class WikiScraper and pass **finance** as the arguments because this function takes topic_name as an argument and saves inside the variable name wiki_data
+   3. Similarly call the get_topics() function from class InvestopediaSrape() and save the results in investo_data.
+   4. To merge the data of wiki_data and investo_data in a single list use (+) operator and store it in topics.
+   5. Check if the folder topics exists in the current directory. If not create one using os.makedirs.
+   6. Save the topics in a text file by using with open functionality built into python. It requires the path of the file that we want to perform operation on.
+   7. Save the topics in a text file and return True.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def watermark_photo(input_image_path,watermark_image_path,output_image_path):
+    base_image = Image.open(input_image_path)
+    watermark = Image.open(watermark_image_path).convert(""RGBA"")
+    # add watermark to your image
+    position = base_image.size
+    newsize = (int(position[0]*8/100),int(position[0]*8/100))
+    # print(position)
+    watermark = watermark.resize(newsize)
+    # print(newsize)
+    # return watermark
+
+    new_position = position[0]-newsize[0]-20,position[1]-newsize[1]-20
+    # create a new transparent image
+    transparent = Image.new(mode='RGBA',size=position,color=(0,0,0,0))
+    # paste the original image
+    transparent.paste(base_image,(0,0))
+    # paste the watermark image
+    transparent.paste(watermark,new_position,watermark)
+    image_mode = base_image.mode
+    print(image_mode)
+    if image_mode == 'RGB':
+        transparent = transparent.convert(image_mode)
+    else:
+        transparent = transparent.convert('P')
+    transparent.save(output_image_path,optimize=True,quality=100)
+    print(""Saving""+output_image_path+""..."")
+","Create a function watermark_photo 
+1. Open the input image and watermark image using the open function from the Image module and convert the watermark image to RGBA format.
+2. Resize the watermark image to 8% using the resize method of the input images' size.
+3. Calculate the position of the watermark image on the input image and store it in a variable
+4. Creating a new transparent image with the same size as an input image.
+5. Then paste a base image and watermark image in the transparent image and create the mode of base image and print.
+6. Then convert the image to the RGB mode and save the image to the output image path along with the print statement.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_details(project_id):
+    """"""Returns project_id, title, summary, instructions and categories for the
+    given project.
+
+    Args:
+    project_id (str): Unique id of a project
+
+    Returns:
+    return: dict
+    """"""
+    details = {
+    ""project_id"": project_id,
+    ""title"": None,
+    ""summary"": None,
+    ""instructions"": None,
+    ""categories"": None,
+    }
+
+    try:
+    project = Project.query.filter_by(project_id=project_id).first()
+    details[""title""] = project.title
+    details[""summary""] = project.summary
+    details[""instructions""] = project.instructions
+    details[""categories""] = Category.get_categories(project_id)
+    return details
+    except Exception as e:
+    print(f""Error while getting details for project {project_id}: {e}"")
+    return None","Write a get_details method in the Project class. It takes the unique id of the project and returns its details to a dictionary. we make a use of try/ catch block in the function if any error occurs while quering the database.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def scrape(self, topic_name):
+    """"""save the result in dictionary
+
+    Args:
+        topic_name (str): topic name
+
+    Returns:
+        dictionary: dictionary containing name of the topic content and source from which the data is extracted.
+    """"""
+    details = {
+        ""title"": topic_name,
+        ""content"": None,
+        ""source"" : ""wikipedia""
+    }
+    details[""content""] = self.get_content(topic_name)
+    return details ","Create one more method scrape()
+It will return the title, content of the article and source as wikipedia (This is done to distinguish data from Wikipedia and Investopedia) as a dictionary to get the content we will call the another function and store in the dictionary.
+
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_topics(self, topic_name = None):
+    """"""queries the wikipedia and return the subtopics for particular given topic
+
+    Args:
+    topic_name (str, optional): name of the topic
+
+    Returns:
+    list: returns the list of subtopics 
+    """"""
+    if topic_name == None:
+    raise ValueError(""please provide the topic name to get the links"")
+
+    wiki_topics = wikipedia.page(topic_name).links
+    return wiki_topics","Create a method name get_topics and take topic_name as an argument
+1. Check that topic_name is not None. if it is raise a ValueError.
+2. Call the page method from wikipedia and pass the topic_name as an argument. Save the results to a variable called data.
+3. Return data.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"class BatchGenerator(object):
+
+    def __init__(self, data, num_steps, batch_size, total_words, skip_step=5):
+        self.data = data
+        self.num_steps = num_steps
+        self.batch_size = batch_size
+        self.total_words = total_words
+        self.current_idx = 0
+        self.skip_step = skip_step
+
+    def generate(self):
+        x = np.zeros((self.batch_size, self.num_steps))
+        y = np.zeros((self.batch_size, self.num_steps, self.total_words))
+        while True:
+            for i in range(self.batch_size):
+                if self.current_idx + self.num_steps >= len(self.data):
+                    self.current_idx = 0
+                x[i, :] = self.data[self.current_idx:self.current_idx + self.num_steps]
+                temp_y = self.data[self.current_idx +
+                                   1:self.current_idx + self.num_steps + 1]
+                y[i, :, :] = tf.keras.utils.to_categorical(
+                    temp_y, num_classes=self.total_words)
+                self.current_idx += self.skip_step
+            yield x, y
+","Create a class BatchGenerator and pass an object as an argument.
+Initialize the constructor and pass data, num_steps, batch_size, total_words, and skip_step as an argument and initialize the variables.
+
+Create a generate method inside the class
+1. Create a matrix of zeros with the shape of the batch size and the number of steps.
+(NumPy zeros() function is used to create a new array of given shapes and types filled with zero values.)
+2. In the while loop iterate in batch_size checking if the current index plus the number of steps is greater than the length of the data. If it is, it resets the current index to 0 and yeild x and y.
+(The Yield keyword in Python is similar to a return statement used for returning values or objects in Python.)
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def cli():
+    import time
+    current_time = time.strftime(""%H:%M"")
+  
+    print(""Welcome to Pin Your Note Application."")
+    time.sleep(2)
+    note_input = input(""Type your notes here: "")
+    note = (""%s"") % note_input
+    time.sleep(1)
+   
+    root = tk.Tk()
+    root.title(""Pin Your Note"")
+    root.geometry(""300x300"")
+
+    tk.Label(root, text=current_time).pack()
+  
+    tk.Label(root, text=note).pack()
+
+    root.mainloop()","Create a function cli 
+1. First Get the current time and format it to be displayed in the GUI.
+(GUI stands for Graphical User Interface, and refers to computer programs that provide a visual means for users to interact with an underlying application or system.)
+2. Then ask the user to input their notes.
+3. After creating a GUI with a title and run the GUI.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_clean_amount(amount):
+    """"""Checks if the amount is a string and contains `,` or `Rs`. Returns
+    corresponding float
+
+    Args:
+        value (Any): the amount which we need to clean
+
+    Returns:
+        float: corresponding float value for the given string
+    """"""
+    if isinstance(amount, int) or isinstance(amount, float):
+        return float(amount)
+    if isinstance(amount, str):
+        try:
+            amount = float(amount)
+            return amount
+        except:
+            if ""Rs"" in amount:
+                amount = amount.replace(""Rs"", """").strip()
+            if "","" in amount:
+                amount = amount.replace("","", """")
+            try:
+                amount = float(amount)
+                return amount
+            except:
+                return None
+    return None","This function will check if the amount is a string contains "","" or ""Rs"" and returns the corresponding float.
+1. We have put the checker if the amount is float then will return amount. else will replace ""Rs"", to """"
+2. If there is "","" in column we will replace with """"","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def process_txn_remark(df):
+    """"""Checks if any entry in the Transaction Remark column has float or int
+    values which could be the transaction reference numbers themselves, if so need
+    to be converted to a string.
+
+    Args:
+        df (pandas.DataFrame)
+
+    Returns:
+        pandas.DataFrame:
+    """"""
+
+    df[""Transaction Remark""] = df[""Transaction Remark""].map(
+        lambda x:
+        str(int(x)) if isinstance(x, int) or isinstance(x, float) else x
+    )
+    return df","Create a function process_txn_remark which checks the element in the column Transaction Remark either is of type int or float and converts it to string. Also if the value of the element is of type float we first need to convert into integer type before converting it into the string. This is done to avoid decimals point and zeroes after the actual required value. 
+1. The pandas dataframe has a function  map function that lets us operate a function on an iterable (list, array, etc) element-wise. 
+2. The Function process_txn_remark which takes a dataframe and converts the entries of the dataframe to string.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@classmethod
+def approve_user_assignment(cls, user_assigment_id):
+    """"""Changes status of the user assignment to True
+
+    Args:
+        user_assigment_id (str): Unique id of the user assignment
+
+    Returns:
+        bool: True if updated successfully, else false
+    """"""
+    ua = UserAssignment.query.filter_by(uuid=user_assigment_id).first()
+    ua.is_proper = True
+    try:
+        db.session.commit()
+        return True
+    except Exception as e:
+        print(
+            f""Error while approving assignment for {user_assigment_id}: {e}"")
+        db.session.rollback()
+        return False","Create a classmethod approve_user_assignment the function will Changes status of the user assignment to True
+
+1. Querying the UserAssignment table to get the unique id if the unique id is present in database then will make is_proper column of user table True.
+2. In try block will commit the changes in the database and returns the True.
+3. If any error occur will catch the error in Exception block and return False along with print statement.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"
+def register():
+    """"""
+    It creates a new user in the database
+    :return: A dictionary with two keys.
+    """"""
+    # Checking if the request method is POST. If it isn't, it aborts the
+    # request.
+    if request.method != ""POST"":
+        abort(400)
+
+    # Getting the JSON object from the request.
+    data = request.get_json()
+
+    email = data[""email_address""]
+    fname = data[""first_name""]
+    lname = data[""last_name""]
+    password = data[""password""]
+    hash_id = data[""hash_id""]
+
+    # Checking if the email address is already in the database.
+    is_present = UserInfo.query.filter_by(email_address=email).first()
+
+    # Checking if the email address is already in the database.
+    if is_present:
+        return {""user_registered"": False, ""message"": ""User already registered.""}
+
+    # Creating a new user.
+    new_user = UserInfo.create(email, fname, lname)
+
+    # Checking if the user was created.
+    if new_user:
+        
+        # Fetch user ID
+        usr = UserInfo.query.filter_by(email_address=email).first()
+        uid = usr.user_id
+
+        # Creating new user credentials.
+        new_creds = UserLogin.add_credentials(email, password, hash_id)
+
+        # Checking if the user credentials were created.
+        if new_creds:
+            # Fetching the confirmation token from the database and sending it to
+            # the user's email address.
+            usr_creds = UserLogin.query.filter_by(user_id=uid).first()
+            conf_tok = usr_creds.confirmation_token
+            email_resp = send_confirmation_email(uid, conf_tok, email)
+            return {""user_registered"": True, ""message"": ""User registered successfully.""}
+
+        # If the user credentials were not created, it deletes the user from the
+        # database.
+        else:
+            db.session.delete(usr)
+            db.session.commit()
+
+    # Default return
+    return {""user_registered"": False, ""message"": ""Unable to register user.""}","1. Check if the request method is POST. If it isn't, abort the request.
+2. Get the JSON object from the request and fetch the following details:
+   1. email_address
+   2. first_name
+   3. last_name
+   4. password
+   5. hash_id
+3. Check if the email address is already in the database. If it is, return the function with feedback stating the user is already registered.
+4. If the email address is not already present, then create the user.
+5. If the user is created, then create the credentials.
+6. Ensure that credentials are created. If not, then delete the user created and return the function with a feedback message stating unable to register the user.
+7. If the credentials are created, fetch the user ID and confirmation token created and send an email to the user for email validation. Return the function with feedback stating user successfully created it.
+8. If the user credential were not created id deletes the user from the database.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@auth_blueprint.route(""/login"", methods=[""POST""])
+def login():
+    email = request.form[""email""].strip()
+    password = request.form[""password""].strip()
+
+    user_id = User.verify_user(email_address=email, password=password)
+    if user_id:
+        session[""user_id""] = user_id
+        print(""Login Successful"")
+        return redirect(url_for(""auth.home""))
+
+    return redirect(url_for(""auth.home""))","Create a new controller ""login"" this function will run once the /login endpoint is hit.
+This function will check if the user exist in the session or not.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def cleaning_text(captions):
+    table = str.maketrans('','',string.punctuation)
+    for img,caps in captions.items():
+        for i,img_caption in enumerate(caps):
+            img_caption.replace(""-"","" "")
+            desc = img_caption.split()
+            #converts to lowercase
+            desc = [word.lower() for word in desc]
+            #remove punctuation from each token
+            desc = [word.translate(table) for word in desc]
+            #remove hanging 's and a 
+            desc = [word for word in desc if(len(word)>1)]
+            #remove tokens with numbers in them
+            desc = [word for word in desc if(word.isalpha())]
+            #convert back to string
+            img_caption = ' '.join(desc)
+            captions[img][i]= img_caption
+    return captions","Create a function cleaning_text will take captions as an argument.
+1. Create a table that will be used to remove punctuation from the text.
+2. Iterating through the captions dictionary and then splits up the caption into words using split(), removes any punctuation from each word and remove tokens with numbers in them and covert back to string. 
+3. At last return the dictionary","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def add_proxies_to_file(csv_path: str, proxies: list):
+    '''This function will add one or multiple proxies to the CSV file.'''
+
+    if not csv_path.exists():
+        pr_file: pd.DataFrame = pd.DataFrame(
+            columns=['proxy_type', 'proxy_address', 'proxy_status'])
+        logging.info('New CSV file will be created')
+    else:
+        pr_file: pd.DataFrame = pd.read_csv(csv_path)
+        logging.info('Existing CSV file has been loaded')
+
+    for proxy in proxies:
+        if len(pr_file) == 0:
+            # First proxy in the file
+            pr_file = pr_file.append(proxy, ignore_index=True)
+        else:
+            if len(pr_file.loc[(pr_file['proxy_type'] == proxy['proxy_type']) &
+                               (pr_file['proxy_address'] == proxy['proxy_address'])]) > 0:
+                # Proxy is already in the file
+                pr_file.loc[(pr_file['proxy_type'] == proxy['proxy_type']) &
+                            (pr_file['proxy_address'] == proxy['proxy_address']),
+                            ['proxy_status']] = proxy['proxy_status']
+            else:
+                # Proxy is not yet in the file
+                pr_file = pr_file.append(proxy, ignore_index=True)
+
+    pr_file = pr_file.drop_duplicates()
+    pr_file.to_csv(csv_path, index=False)
+    logging.info('CSV file has been written')
+","Create a function add_proxies_to_file that will take csv_path and proxies as an argument and add proxies to the CSV file.
+1. Checking if the CSV file exists and if it doesn't, it will create a new CSV file else if the file exists it will directly read the CSV file.
+2. Then create a new dataframe with the columns proxy_type, proxy_address, and proxy_status using the DataFrame class of the pandas module after logging the successful message.
+3. Then it will be checking if the proxy is already in the file.
+4. Next add the proxy to the dataframe.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"class RegistrationForm(FlaskForm):
+    username = StringField('Username',
+                           validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')","Create a class RegistrationForm and pass FlaskForm as an argument
+(Flask-WTF handles passing form data to the form for you. If you pass in the data explicitly, remember that request. form must be combined with request. files for the form to see the file data.)
+1. The code is an example of a form that will allow the user to input their username, email, and password and confirm_password.
+2. In confirm password we have use the EqualTo that will check 
+2. Atlast declare a Submit button that will send the information to the server when clicked.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def addition():
+   os.system('cls' if os.name == 'nt' else 'clear')
+   print('Addition')
+
+   continue_calc = 'y'
+
+   num_1 = float(input('Enter a number: '))
+   num_2 = float(input('Enter another number: '))
+   ans = num_1 + num_2
+   values_entered = 2
+   print(f'Current result: {ans}')
+
+   while continue_calc.lower() == 'y':
+       continue_calc = (input('Enter more (y/n): '))
+       while continue_calc.lower() not in ['y', 'n']:
+           print('Please enter \'y\' or \'n\'')
+           continue_calc = (input('Enter more (y/n): '))
+
+       if continue_calc.lower() == 'n':
+           break
+       num = float(input('Enter another number: '))
+       ans += num
+       print(f'Current result: {ans}')
+       values_entered += 1
+   return [ans, values_entered]","Create a function addition.
+1. Clear the screen using 'cls
+2. At first ask user to enter two numbers and then adding them together and print the result.
+3. In while loop Asking the user if they want to continue adding numbers.
+4. Asking the user to enter either 'y' or 'n' and if they don't it will ask them to enter 'y' or 'n' again
+5. Break the loop if the user enters 'n'.
+6. Ask the user to enter another number and then adding it to the previous answer.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"
+class Scraper:
+
+    # Initializes the scraper C3PO
+    def __init__(self, url, budget, u_email):
+
+        # Attributes about product
+        self.url = url
+        self.budget = budget
+
+        # Setting user email
+        self.u_email = u_email
+
+        # Attributes about scraping
+        self.session = HTMLSession()
+        self.webpage = self.session.get(self.url).content
+        self.parser = 'lxml'
+        self.soup = BeautifulSoup(self.webpage, self.parser)
+
+def get_title(self):
+        temp_title = self.soup.find('span', id='productTitle').text.strip()
+        temp_list_title = []
+        for x in temp_title:
+            if x == '(':
+                break
+            temp_list_title.append(x)
+        self.product_title = ''.join(temp_list_title)
+        return self.product_title","Create a class Scraper and its constructor and pass url, budget, u_email as an argument.
+and initialize the attributes.
+
+Create a method get_title inside the class 
+1. Finding the title of the product and then stripping it of any extra characters.
+2. Create an empty list
+3. This is a for loop that is iterating through the string temp_title. The if statement is checking if the character is equal to '(' and if it is, it breaks out of the loop else appending the value of x to the list temp_list_title.
+4. Then join the list of characters into a string and return the value of the product title.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@classmethod
+def verify_user(cls, email_address, password):
+    """"""Authenticates user's details
+
+    Args:
+        email_address (str): Email address of the user 
+        password (str): Password for login
+
+    Returns:
+        bool: True if the user authenticates, else False
+    """"""
+    user = User.query.filter_by(email_address=email_address).first()
+    if not user:
+        return None
+
+    # Compare password
+    hashed_pass = user.password
+    if sha256_crypt.verify(password, hashed_pass):
+        return user.user_id
+
+    return None","Write a staticmethod name verify_user. It will take email_address and password as an arguments and matches wheter it matches with the database. It uses the verify method from sha256_crypt that we used in the create method. If the password match, it returns the user_id  the user, else None.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def find_the_video(file_name, directory_name):
+    files_found = []
+    for path, subdirs, files in os.walk(directory_name):
+        for name in files:
+            if(file_name == name):
+                file_path = os.path.join(path, name)
+                files_found.append(file_path)
+
+    print(files_found)
+    return files_found[0]  # Return the path.
+
+","Create a function find_the_video This function finds your file. If you don't know the directory just type '/'
+1. Create an empty list
+2. Iterate through the directory and subdirectories.
+3. Next line iterates through the files in the directory.
+4. Checking if the file name is the same as the name of the file in the directory if it is then Join the path and the name of the file and append it to the list.
+5. Printing the list of files found and returning the first file in the list.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@classmethod
+def add_credentials(cls, email_address, password, hash_id):
+    """"""
+    It takes an email address, password, and hash_id, and adds a new row to the
+    user_credentials table
+
+    :param cls: The class object
+    :param email_address: The email address of the user
+    :param password: The password to be hashed
+    :param hash_id: This is the hash algorithm used to hash the password
+    :return: The user_id is being returned.
+    """"""
+    # Checking to see if the password is a string. If it is not, it will
+    # raise a TypeError.
+    if not isinstance(password, str):
+    	raise TypeError(""Passwords must be string"")
+
+    # Generating a salt, hashing the password, generating a confirmation
+    # token, getting the current timestamp, and getting the user_id.
+    salt = generate(size=10)
+    hashed_password = cls.generate_hash(password, salt, hash_id)
+    confirmation_token = generate(size=64)
+    current_ts = datetime.now()
+    user_id = cls.user_exists(email_address)
+","Create a classmethod to add the user credentials in the database which takes an email address, password, and hash_id, as inputs. Take the following steps to create this function:
+   1. Check to see if the password is a string. If not, raise a TypeError
+   2. Generating a salt using nanoid, hash the password using the function created earlier, generate a confirmation token using nanoid, get the current timestamp from datetime package, and get the user_id by querying the UserInfo class.
+   3. Create a new UserLogin object.
+   4. Add the new UserLogin object created in step 3 to the database and try committing it.
+   5. Catch any SQLAlchemy errors that may occur, printing the error and roll back the database.
+   6. Return True if the credentials are created else return False.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def textfile_analysis(file):
+    script_name = sys.argv[0]
+
+    res = {
+        ""total_lines"":"""",
+        ""total_characters"":"""",
+        ""total_words"":"""",
+        ""unique_words"":"""",
+        ""special_characters"":""""
+    }
+
+    try:
+        textfile = sys.argv[1]
+        with open(file, ""r"", encoding = ""utf_8"") as f:
+
+            data = f.read()
+            res[""total_lines""] = data.count(os.linesep)
+            res[""total_characters""] = len(data.replace("" "","""")) - res[""total_lines""]
+            counter = collections.Counter(data.split())
+            d = counter.most_common()
+            res[""total_words""] = sum([i[1] for i in d])
+            res[""unique_words""] = len([i[0] for i in d])
+            special_chars = string.punctuation
+            res[""special_characters""] = sum(v for k, v in collections.Counter(data).items() if k in special_chars)
+
+    except IndexError:
+        print('Usage: %s TEXTFILE' % script_name)
+    except IOError:
+        print('""%s"" cannot be opened.' % textfile)
+
+    print(res)
+
+","Create a function textfile_analysis that will accept the file as an argument and returns the dictionary.
+1. Get the name of the script and define the dictionary with the keywords.
+2. In the try block get the name of the file and open the file in ""r"" mode and read the file using the read() method.
+3. Next count the total lines and total characters from the given file using the count method.
+4. Count the number of words in the file, unique words, and special characters.
+(Counter-Create a new, empty Counter object. And if given, count elements from an input iterable. Or, initialize the count from another mapping of elements to their counts.)
+5. In except bloc will raise 2 errors along with the print statement
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def __check_bank_df(self, df):
+    """"""Performs sanity checks on the given bank dataframe
+
+    Args:
+    df (pandas.DataFrame): Pandas dataframe contaning bank data
+
+    Returns:
+    pandas.DataFrame: Cleans and checked dataframe
+    """"""
+
+    expected_columns = self.bank_expected_columns
+
+    df = self.__common_checks(df, expected_columns)
+    if not isinstance(df, pd.DataFrame):
+    return None
+
+    # Check datatype for Transaction Remark
+    df = process_txn_remark(df)
+    if not isinstance(df, pd.DataFrame):
+    return None
+
+    # For Debit and Credit amount
+    df = process_amount_for_bank(df)
+
+    return df","Create a private method __check_bank_df that perform the sanity check on the given bank dataframe.
+1. The code starts by checking the expected columns for the bank dataframe. If they are not found, then it returns None.
+2. Next, it checks datatype of Transaction Remark column by calling the process_txn_remark and if not then return None.
+3. Now to process the Debit and Credit amount column call the function
+process_amount_for_bank and return dataframe.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@home_blueprint.route(""/create-credentials"", methods=[""POST""])
+from authenticator.models.users import UserInfo, UserLogin
+
+def create_credentials():
+    """"""
+    It creates new user credentials.
+    :return: Dictionary with status and message.
+    """"""
+    # Checking if the request method is not POST. If it isn't, it aborts the
+    # request.
+    if request.method != ""POST"":
+        abort(400)
+
+    # Getting the JSON object from the request.
+    data = request.get_json()
+
+    # Getting the email address, password, and hash_id from the JSON object.
+    email = data[""email_address""]
+    password = data[""password""]
+    hash_id = data[""hash_id""]
+
+    # Checking if the email address is already in the database.
+    is_present = UserInfo.query.filter_by(email_address=email).first()
+
+    # Checking if the email address is already in the database.
+    if not is_present:
+        return {""credentials_created"": False, ""message"": ""Email does not exist""}
+
+    # Checking if credentials are already created
+    user_id = is_present.user_id
+    existing_creds = UserLogin.query.filter_by(user_id=user_id).first()
+
+    if existing_creds:
+        return {""credentials_created"": False, ""message"": ""Credentials already created""}
+    
+    # Creating new user credentials.
+    new_creds = UserLogin.add_credentials(email, password, hash_id)
+
+    # Checking if the user credentials were created.
+    if new_creds:
+        return {""credentials_created"": True, ""message"": ""Credentials created""}
+
+    # Default return
+    return {""credentials_created"": False, ""message"": ""Unable to create credentials""}
+","1. Check if the request method is not POST and abort if it's not.
+2. Get the JSON object from the request and extract email_address, password, and salt.
+3. Ensure that the email address of the user is already in the database and existing credentials are not present.
+4. If credentials are not present, add them to the database.
+5. Return True with the message Credential created if credentials are created else False.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def gen_cloud(topic):
+    try:
+        content = str(wikipedia.page(topic).content)
+    except:
+        print(""Error, try searching something else..."")
+        sys.exit()
+    STOPWORDS.add('==')
+    stopwords = set(STOPWORDS)
+    wordcloud = WordCloud(stopwords=stopwords, max_words=200, background_color=""black"", width=600, height=350).generate(content)
+    return wordcloud
+","1. Create function gen_cloud 
+2. This function takes in the topic as an argument and then tries to get the content of the Wikipedias page for that topic.
+3. If it succeeds, it will return a string with the text from that page; otherwise, it will print an ""Error"" message and exit the program.
+4. At the next line of code we will define and set our stopwords.
+(Stop Words: A stop word is a commonly used word (such as “the”, “a”, “an”, or “in”) that a search engine has been programmed to ignore, both when indexing entries for searching and when retrieving them as the result of a search query.)
+5. The next line creates a WordCloud object using these stopwords and max_words=200 so there are 200 unique words in each cloud generated and return the word cloud
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def spotify_songs(number, playlist):
+   items = []
+   res = spotipy.Spotify( client_credentials_manager=SpotifyClientCredentials() )
+   results = res.playlist( playlist )
+   number = min(len(results['tracks']['items']), number)
+
+   for track in results['tracks']['items'][:number]:
+       artist = track['track']['album']['artists'][0]['name']
+       title = track['track']['name']
+       r = ytapi.search_by_keywords(q=artist + ' ' + title , search_type=[""video""], count=1, limit=1)
+       item = {""artist"":artist, ""title"":title}
+       for r in r.items:
+           item[""video""] = {""id"":r.id.videoId, ""title"":r.snippet.title, ""desc"":r.snippet.description}
+       items.append( item )
+   return items
+","1. It then creates a Spotify client credentials manager object and passes it to the spotipy.Spotify() function, which returns an instance of the Spotify class.
+2. The code then uses this instance to call the playlist method on this object, which returns a list of items from that playlist in order.
+3. The number parameter is used as a limit for how many items are returned from each search query, so if there are more than 100 results, only 10 will be returned at a time.
+4. Then creating a for loop that will iterate through the results dictionary and print the artist and title of the song.
+4. Then it calls ytapi's search_by_keywords function with two parameters: q=artist + ' ' + title , where artist is replaced with whatever was found in the first result (the album name) and title is replaced with what was found in the second result (the song name).
+6. The function is used to create a list of Spotify tracks, and then iterate through the list of items and append to the empty list that we have created.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def unique_airlines(df, col_name):
+    airline_count = df[col_name].nunique()
+    airline_names = df[col_name].unique()
+
+    return f""Data is available for {airline_count} airlines, which are {', '.join(airline_names)}""  
+","Let us create a function that takes the dataframe and column name as input and returns the output as a useful message. We have saved the dataframe as sentiment_data and the names of airlines are mentioned in the column called airline. The function returns a string with the number of airlines that are available for analysis along with their names.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@classmethod
+def get_category(cls, user_assignment_id):
+    """"""Returns category value for the given user assignment
+
+    Args:
+    	user_assignment_id (str): Unqiue id of the user assignment
+
+    Returns:
+    	str: category
+    """"""
+    user_assignment = UserAssignment.query.filter_by(
+    	uuid=user_assignment_id).first()
+    category_id = user_assignment.category_id
+    category = Category.query.filter_by(
+    	category_id=category_id
+    ).first()
+    if category:
+    	return category.category
+    return """"","Create a classmethod get_category that returns the category value for the user assignment.
+1. At frist will query the UserAssignmenet database.
+2. It does this by querying the database and filtering out all of the assignments that do not have a category assigned to them
+3. Next to get the category_id will query the Category table and return the category else return the empty string.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"class YoutubeBot:
+    def __init__(self,username,password):
+        self.username=username
+        self.password=password
+        self.bot=webdriver.Firefox()
+        
+    def login(self):
+        bot=self.bot
+        bot.get('https://accounts.google.com/signin/v2/identifier?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3D%252F&hl=en&flowName=GlifWebSignIn&flowEntry=ServiceLogin')
+        time.sleep(2)
+        email=bot.find_element_by_id('identifierId')
+        email.send_keys(self.username)
+        time.sleep(3)
+        email.send_keys(Keys.RETURN)
+        time.sleep(2)
+        password=bot.find_element_by_name('password')
+        password.send_keys(self.password)
+        time.sleep(2)
+        password.send_keys(Keys.RETURN)","Create a class YoutubeBot and define a constructor pass the username and password as an argument.
+1. Assign the parameters to the class.
+2. Creating a new instance of the Firefox webdriver.
+
+Create a method login
+It opens the youtube login page, waits for 2 seconds, finds the element with the id
+identifierId, sends the value of the variable self.username to the element with the id
+identifierId, waits for 3 seconds, presses the enter key, waits for 2 seconds, finds the
+element with the name password, sends the value of the variable self.password to the element
+with the name password, waits for 2 seconds, and presses the enter key.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def lambda_handler(event, context):
+    print(""event "" + str(event))
+    print(""context "" + str(context))
+    ec2_reg = boto3.client('ec2')
+    regions = ec2_reg.describe_regions()
+    for region in regions['Regions']:
+        region_name = region['RegionName']
+        instances = Ec2Instances(region_name)
+        deleted_counts = instances.delete_snapshots(1)
+        instances.delete_available_volumes()
+        print(""deleted_counts for region "" +
+              str(region_name) + "" is "" + str(deleted_counts))
+        instances.shutdown()
+        print(""For RDS"")
+        rds = Rds(region_name)
+        rds.cleanup_snapshot()
+        rds.cleanup_instances()
+    return 'Hello from Lambda'","Create a function lambda_handler
+1. The code starts by printing out the event and context.
+2. Next, it creates an ec2 client object called ""ec2"". It then uses this client to list all of the regions in which EC2 instances exist.
+3. We iterate through each region and print out information about it such as its name, how many snapshots have been deleted from it, how many volumes have been deleted from it, and finally shutting down all instances in that region.
+4. Finally we return the string","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@staticmethod
+    def user_exists(email_address):
+        """"""
+        If a user exists, return the user's id
+        
+        :param email_address: The email address of the user
+        :return: The user_id of the user with the email address that was passed in.
+        """"""
+        user = UserInfo.query.filter_by(email_address=email_address).first()
+        if user:
+            return user.user_id","1. Create a staticmethod name user_exists to check if a user exists using the email address and return the user's id if present else return None. You can read more about Python's staticmethod [here](https://docs.python.org/3/library/functions.html#staticmethod).
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@classmethod
+def set_category(cls, user_assignment_id, category_id):
+    """"""Updates category of the user assignment.
+
+    Args:
+        user_assignment_id (str): Unqiue id of the user assignment
+        category_id (str): unique id of the category
+
+    Returns:
+        bool: True if execution successful, else false 
+    """"""
+    user_assignment = UserAssignment.query.filter_by(
+        uuid=user_assignment_id
+    ).first()
+    user_assignment.category_id = category_id
+    try:
+        db.session.commit()
+        return True
+    except Exception as e:
+        print(
+            f""Error while updating category for {user_assignment_id}: {e}"")
+        db.session.rollback()
+        return False","Create a classmethod set_category it updates the category of user assignment.
+
+The function start by quering the UserAssignment database for the unique id
+Then it updates the category of user assignment
+Then will commit the changes and return True incase of errorr will return False along with print statement.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def process_amount_for_cms(df):
+    """"""Cleans ""Amount"" column ie remove ""Rs"", "","" and
+    converts to float.
+
+    Args:
+        df (pandas.DataFrame)
+
+    Returns:
+        pandas.DataFrame
+    """"""
+    df[""Amount""] = df[""Amount""].map(get_clean_amount)
+    return df","Create a function process_amount_for_cms 
+CMS data contains the ""Amount"" column which contains information about the amount that needs to be cleaned. Will call the get_clean_amount function as before to clean it.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def download_img(img_link, index):
+    try:
+        extensions = ["".jpeg"", "".jpg"", "".png"", "".gif""]
+        extension = "".jpg""
+        for exe in extensions:
+            if img_link.find(exe) > 0:
+                extension = exe
+                break
+
+        img_data = rq.get(img_link).content
+        with open(output + ""\\"" + str(index + 1) + extension, ""wb+"") as f:
+            f.write(img_data)
+        
+        f.close()
+    except Exception:
+        pass","Create a function download_img the function will tke th link as an argument and download the image
+1. create a list of extensions that we can expect 
+2. Iterate throught the list of extensions and get the extension using find function then save the extension in a variable and break
+3.  Download the image using get  method of request and savee the image in the as required name and close the file  ","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def upload_to_s3(local_file, bucket, s3_file):
+    ## This function is responsible for uploading the file into the S3 bucket using the specified credentials. 
+    s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
+                      aws_secret_access_key=SECRET_KEY)
+    try:
+        s3.upload_file(local_file, bucket, s3_file)
+        print(""Upload Successful"")
+        return True
+    except FileNotFoundError:
+        print(""The file was not found"")
+        return False
+    except NoCredentialsError:
+        print(""Credentials not available"")
+        return False
+
+
+result = upload_to_s3(LOCAL_FILE, BUCKET_NAME, S3_FILE_NAME)","Create a function upload_to_s3 the fumction is responsible for uploading the file into the s3 bucket to do so
+1. First creating a client object that will be used to interact with the S3 service using the boto3
+(Boto3 makes it easy to integrate your Python application, library, or script with AWS services including Amazon S3, Amazon EC2, Amazon DynamoDB, and more.)
+2. We make a use of try/catch block to upload the images in s3 bucket 
+3. To upload the image we use the upload_file function of s3 client if the upload is successful will return the True with print statement.
+4. In case of exception first is FileNotFoundError will return the false.
+
+(Any message with the contents FileNotFoundError indicates that Python cannot find the file you are referencing. Python raises this error because your program cannot continue running without being able to access the file to which your program refers. )
+
+5. The next except block is NoCredentialsError will return the False along with print statement
+
+(The NoCredentialsError is an error encountered when using the Boto3 library to interface with Amazon Web Services (AWS). Specifically, this error is encountered when your AWS credentials are missing, invalid, or cannot be located by your Python script.)
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def check_password_strength():
+   password = getpass.getpass('Enter the password: ')
+   strength = 0
+   remarks = ''
+   lower_count = upper_count = num_count = wspace_count = special_count = 0
+
+   for char in list(password):
+       if char in string.ascii_lowercase:
+           lower_count += 1
+       elif char in string.ascii_uppercase:
+           upper_count += 1
+       elif char in string.digits:
+           num_count += 1
+       elif char == ' ':
+           wspace_count += 1
+       else:
+           special_count += 1
+
+   if lower_count >= 1:
+       strength += 1
+   if upper_count >= 1:
+       strength += 1
+   if num_count >= 1:
+       strength += 1
+   if wspace_count >= 1:
+       strength += 1
+   if special_count >= 1:
+       strength += 1
+
+   if strength == 1:
+       remarks = ('That\'s a very bad password.'
+           ' Change it as soon as possible.')
+   elif strength == 2:
+       remarks = ('That\'s a weak password.'
+           ' You should consider using a tougher password.')
+   elif strength == 3:
+       remarks = 'Your password is okay, but it can be improved.'
+   elif strength == 4:
+       remarks = ('Your password is hard to guess.'
+           ' But you could make it even more secure.')
+   elif strength == 5:
+       remarks = ('Now that\'s one hell of a strong password!!!'
+           ' Hackers don\'t have a chance guessing that password!')
+
+   print('Your password has:-')
+   print(f'{lower_count} lowercase letters')
+   print(f'{upper_count} uppercase letters')
+   print(f'{num_count} digits')
+   print(f'{wspace_count} whitespaces')
+   print(f'{special_count} special characters')
+   print(f'Password Score: {strength / 5}')
+   print(f'Remarks: {remarks}')
+
+","Create a function check_password_strength that will check the strength of your password.
+1. Ask the user to enter the password for that we are using the getpass function.
+(The getpass() function is used to prompt users using the string prompt and reads the input from the user as Password.)
+2. At first initialize the strength of the variable to 0 and initialize the remark to an empty string.
+3. Initializing all the variables to 0.
+4. Iterate through the password and check if the character is a lowercase letter, uppercase letter, digit, whitespace, or special character.
+5. This is the conditional statement that is checking the strength of the password and giving a remark based on the strength.
+6. Atlast print the lower count, uppercount, numcount, whitespaces, specialcount, password score and remark.
+
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def load_doc(filename):
+    # Opening the file as read only
+    file = open(filename, 'r')
+    text = file.read()
+    file.close()
+    return text","Create a function load_doc
+1. Open the file as read only.
+2. Read the file using read()
+3. Close the file and return the text","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@classmethod
+def __create(cls, user_id, project_id, role):
+    """"""Creates new entry in the user_roles table
+
+    Args:
+    user_id (str): Unique id of the user
+    project_id (project_id): Unique id of the project
+    role (str): Enum from `Role` class.
+
+    Returns:
+    str: Id of the role created.
+    """"""
+    uuid = generate_uid()
+    new_role = cls(
+    uuid=uuid, user_id=user_id, project_id=project_id, role=role
+    )
+    try:
+    db.session.add(new_role)
+    db.session.commit()
+    return uuid
+    except Exception as e:
+    print(f""Error creating new role {project_id}-{user_id}: {e}"")
+    db.session.rollback()
+    return None","Create a private class method __create to create the new entry in the user_roles table.
+
+1. First generate the unique identifier for that will call the generate_uid function
+2. Now created the object of the same class using cls
+3. Add the object in our database for that we have used the try/catch block incase of any error occurs while working with database.
+4. If new entry is created then first will cmmit the changes and  return the unique identifier else will use session.rollback and return None","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def load_vectorizer_and_model(self):
+    """"""Load vectorizer the model from the path defined during init.
+
+    Returns
+    -------
+    (tuple) - vectorizer and model
+    """"""
+    with open(self.vectorizer_path, ""rb"") as v:
+    vectorizer = pickle.load(v)
+
+    with open(self.model_path, ""rb"") as m:
+    model = pickle.load(m)
+
+    return vectorizer, model","The load_vectorizer_and-model method loads both the vectorizer and model from their respective locations in order to use them later on in this program.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def check_play_status():
+  valid_responses = ['yes', 'no']
+  while True:
+      try:
+          response = input('Do you wish to play again? (Yes or No): ')
+          if response.lower() not in valid_responses:
+              raise ValueError('Yes or No only')
+
+          if response.lower() == 'yes':
+              return True
+          else:
+              os.system('cls' if os.name == 'nt' else 'clear')
+              print('Thanks for playing!')
+              exit()
+
+      except ValueError as err:
+          print(err)","Create a function check_play_status to check the status 
+1. Create a list of valid response
+2. Start a while loop and in the try block that will keep asking the user to input a valid response until they do.
+3. This is a check to see if the user input is in the list of valid responses. If it is not, it will raise a ValueError. 
+4. If the response is yes then return True.
+5. Else print the message and exit the loop.
+6. Now in except block raise a ValueError.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def square(x):
+    sum_so_far = 0
+    for _ in range(x):
+        sum_so_far += x
+	return sum_so_far  # noqa: E999 # pylint: disable=mixed-indentation Python 3 will raise a TabError here
+","Create a function square the function calculates the square of a number.
+The function starts by setting the initial value is 0 then loops through each value in x that we pass as an argument.
+After all values are calculated, the function returns the total sum so far.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def verify_password(self, password):
+        """"""
+        It takes a password, generates a hash from it, and compares it to the hash
+        stored in the database
+        
+        : param password: The password to be verified
+        :return: a boolean value.
+        """"""
+        # Checking to see if the password is a string. If it is not, it will
+        # raise a TypeError.
+        if not isinstance(password, str):
+            raise TypeError(""Passwords must be string"")
+
+        salt = self.password_salt
+        hash_id = self.hash_id
+
+        # Generating a hash from the password that was passed in.
+        given_password_hash = self.generate_hash(password, salt, hash_id)
+ It should take a password as input, generate a hash from it, and compare it to the hash stored in the database.
+        # Comparing the given password hash to the password hash stored in the
+        # database.
+        if given_password_hash == self.password_hash:
+            return True
+
+        return False","1. Create a method verify_password. It should take a password as input, generate a hash from it, and compare it to the hash stored in the database.
+2. You need to append the salt to the user password before generating the hash. We have a method for it already called generate_hash which takes a password, salt, and hash_id as arguments and returns a hashed password.
+3. The hash_id and the salt must be extracted from the database as these entries are already present.
+4. The return value must be a boolean derived by comparing the given password hash to the password hash stored in the database.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def record_audio():
+   global recording
+   recording= True  
+   global file_exists
+   messagebox.showinfo(message=""Recording Audio. Speak into the mic"")
+   with sf.SoundFile(""trial.wav"", mode='w', samplerate=44100,
+                       channels=2) as file:
+           with sd.InputStream(samplerate=44100, channels=2, callback=callback):
+               while recording == True:
+                   file_exists =True
+                   file.write(q.get())","Create a function record_audio.
+1. First declare the global variable recording.
+2. Set the recording to True.
+3. Create a file to save the audio.
+4. A message box that pops up when the record button is pressed.
+5. Create an input stream to record audio without a preset time.
+6. In the while loop Set the variable to True to allow playing the audio later and write into file.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def __check_cms_df(self, df):
+    """"""Does the following sanity checks on the given CMS dataframe:
+
+    Args:
+        df (pandas.DataFrame): Pandas dataframe contaning cms data
+
+    Returns:
+        pandas.DataFrame: Cleans and checked dataframe
+    """"""
+    expected_columns = self.cms_expected_columns
+
+    df = self.__common_checks(df, expected_columns)
+    if not isinstance(df, pd.DataFrame):
+        return None
+
+    # Check datatype for Transaction Remark
+    df = process_txn_remark(df)
+    if not isinstance(df, pd.DataFrame):
+        return None
+
+    # Convert Amount to float
+    df = process_amount_for_cms(df)
+
+    return df","Create a private method __check_cms_df .
+
+1. The method starts by checking the dataframe for sanity.
+ It does this by calling a function called __common_checks() which is defined in the class itself.
+2. This function checks that all of the columns have values, that they are numeric, and that their type matches what's expected.
+3. The next step is to convert all amounts into floats to do so call the process_amount_for_cms function and return the dataframe
+
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"class UserAssignment(db.Model):
+
+    __tablename__ = ""user_assignments""
+
+    uuid = db.Column(db.String(10), primary_key=True)
+    user_id = db.Column(db.String(10), db.ForeignKey(""users.user_id""))
+    project_id = db.Column(db.String(10), db.ForeignKey(""projects.project_id""))
+    image_id = db.Column(db.String(10), db.ForeignKey(""images.image_id/home/raj7972/Desktop/techeuristic_projects/pyannotator/instructions/show_images.md""))
+    category_id = db.Column(
+        db.String(10), db.ForeignKey(""categories.category_id""))
+    is_proper = db.Column(db.Boolean)
+
+    def __repr__(self):
+        return f""<UserAssignment: {self.uuid}>""
+","Create a class UserAssignment that represents the user_assignments table in the database. This is done because we are using the sqalchemy ORM.
+The code illustrates the creation of a database table that will hold user roles.
+
+The header of the columns are as follows: uuid, user_id, project_id, image_id, category_id, is_proper
+1. Defines the columns of the table and set the uuid as primary_key is True
+(A primary key, also called a primary keyword, is a column in a relational database table that's distinctive for each record.)
+2. user_id column related to the primary_key of the users table so we make it as a foreignkey   
+(A foreign key is a column (or combination of columns) in a table whose values must match values of a column in some other table)
+3. project_id column related to the primary_key of the project table so we make it as a foreign key
+4. image_id column related to the primary_key of the images table so we make it as a foreign key
+5. category_id column related to the primary_key of the categories table so we make it as a foreign key
+6. The __repr__ function attempts to return a string representation of the UserAssignment object.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_info(self, url):
+    """"""method will give the information such as title and content
+
+    Args:
+    url (str): url of article 
+    Returns:
+    dictionary: returns the dictionary
+    """"""
+    info = {
+    ""title"" : None, 
+    ""content"" : None,
+    ""source"" : ""article""
+    }
+
+    article = Article(url, language = ""en"")
+
+    article.download()
+    article.parse()
+
+    info[""title""] = article.title
+    info[""content""] = article.text
+    return info","Create a method  get_info
+1. This method will return the key title, content, and source of the article.
+2. It takes url of the article as an argument.
+3. We use try except statements to handle errors while getting information from articles.
+4. Then will parse and download the article.   
+5. If there are no errors during parsing or downloading then we'll store all of our data into info[""title""] , info[""content""], and info[""source""].
+6. If any error occurs while getting the title and content from the given URL except statement will catch the error and returns the empty dictionary ","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def shutdown():
+    if platform.system() == ""Windows"":
+        os.system('shutdown -s')
+    elif platform.system() == ""Linux"" or platform.system() == ""Darwin"":
+        os.system(""shutdown -h now"")
+    else:
+        print(""Os not supported!"")
+","Create a function shutdown that will try to shutdown the function.
+1. Check if the system is linux or windows using the system function of platform module 
+(platform module tries to retrieve as much platform-identifying data as possible. It makes this information available via function APIs.)
+2. If the system is windows it will shutdown using os module elif if the system is linux it will shutdown else will return the print statement.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"import time
+
+def countdown(t):
+    while t:
+        mins, secs = divmod(t, 60)
+        timer = '{:02d}:{:02d}'.format(mins,secs)
+        print(timer, end=""\r"")
+        time.sleep(1)
+        t -= 1
+
+    print('Timer completed!')
+
+t = input('Enter the time in seconds: ')
+
+countdown(int(t))","Create a function countdown
+The function starts by asking the user to enter a number of seconds.
+Then code then divides that number by 60, and prints out minutes and seconds in the format ""minutes:seconds"".
+It then sleeps for one second before printing out another timer with the current time left on it.
+The program will print out a timer every minute until there is no more time left on it.
+The code will print the timer in a format of ""00:00"" and then sleep for one second.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def create_similarity():
+    data = pd.read_csv('main_data.csv')
+    # creating a count matrix
+    cv = CountVectorizer()
+    count_matrix = cv.fit_transform(data['comb'])
+    # creating a similarity score matrix
+    similarity = cosine_similarity(count_matrix)
+    return data,similarity","Create a function create_similarity it processes the csv data and creates a count matrix.
+1. Read the csv file and store it in a dataframe.
+2. Create a count matrix using CountVectorizer.
+3. Then the code creates a similarity score matrix using the cosine similarity function.
+4. Return the data and similarity matrix.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def process_data(data):
+    """"""
+    Process the adult income dataset
+    """"""
+    data = data.copy()
+    # Replace missing values
+    data = data.replace({' ?': np.nan})
+    
+    # Code gender
+    data['female'] = data['sex'].replace({' Male': 0, ' Female': 1})
+    # Code target
+    data['target'] = data['target'].replace({' >50K': 1, ' <=50K': 0})
+    # Create a single column for capital wealth
+    data['capital'] = data['capital_gain'] - data['capital_loss']
+    to_drop = ['country', 'education', 'sex', 
+           'capital_gain', 'capital_loss', 
+           'working_class',
+          'race', 'occupation']
+    # Remove excess columns
+    data = data.drop(columns=to_drop)
+    data = pd.get_dummies(data)
+    return data","Create a function process_data it will take data and argument and process the data.
+1. Replace the missing value with ? from the given data.
+2. Replacing the values of the column sex with 0 and 1 same clean the target column.
+3. Create a single column for capital wealth.
+4. Now drop the extra unwanted column using the drop function and return the processed data.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+" 	@classmethod
+    def get_user_assignments(cls, user_id, project_id):
+        """"""Returns assignment id and s3 path of the assigned images to the user
+        for the project. 
+        project.
+
+        Args:
+            user_id (str): Unique id of the user
+            project_id (str): Unique id of the project
+
+        Returns:
+            list: List of dict containing keys `uuid`: unique id of the anntation, 
+            `image_url`: presigned url of the image.
+        """"""
+        try:
+            assigned_images = []
+            response = UserAssignment.query.filter_by(
+                user_id=user_id, project_id=project_id
+            )
+            for category in response:
+                image_url = cls.get_image_url(category.uuid)
+                assigned_images.append({
+                    ""uuid"": category.uuid,
+                    ""image_url"": image_url,
+                })
+
+            return assigned_images
+
+        except Exception as e:
+            print(
+                f""Error while getting categories for user {user_id} and project {project_id}: {e}"")
+            return []
+","Create a function get_user_assignments returns the s3 path of assigned images to the user.
+1. Create a empty list.
+2. Query the UserAssignment database by user_id and project_id and save the resposnse in the variable.
+3.  Iterate the variable and get the image url by calling the get_image_url function and append the result in our empty list as a dictionary and return the list of dictionaries.
+4. For the database query we make a use of try/catch block in-case of any error we will print ht error with user_id and project_id occur and returns the empty list.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def compare_column_order(expected_columns, actual_columns):
+    """"""Checks if the order of the column headers matches as required
+
+    Args:
+        expected_columns (list): List of required column headers
+        actual_columns (list): Column headers of the dataframe
+
+    Returns:
+        bool
+    """"""
+    return expected_columns == actual_columns","Create a function compare_column_order to check if the columns headers matches as required or not and returns the boolean","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def predict_sentiments(self, dataframe, tweet_column=""tweet""):
+    """"""Generate sentiment prediction when a dataframe is passed.
+
+    Parameters
+    ----------
+        dataframe (pandas dataframe) - The dataframe that contains the tweets
+        tweet_column (str) - Name of the column containing tweets
+
+    Returns
+    -------
+        (pandas dataframe) - Dataframe with columns of predicted sentiments and score
+    """"""
+    # Create a dataframe of features (tweet in our case)
+    X = dataframe[tweet_column]
+
+    # Vectorize the tweets
+    X_vect = self.vectorizer.transform(X)
+
+    # Make predictions
+    preds = self.model.predict(X_vect)
+
+    # Add predictions to the main dataframe
+    dataframe[""predicted_sentiment""] = preds
+
+    # Assign score
+    dataframe[""custom_score""] = dataframe[""predicted_sentiment""].map(
+        self.assign_sentiment_score
+    )
+
+    return dataframe
+","Create a method to predict sentiment on any random dataframe. This method should take dataframe and tweet column name as input and should return the dataframe with sentiment and score columns as output.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def main(username):
+    banner()
+    '''main function accept instagram username
+    return an dictionary object containging profile deatils
+    '''
+
+    url = ""https://www.instagram.com/{}/?hl=en"".format(username)
+    page = requests.get(url)
+    tree = html.fromstring(page.content)
+    data = tree.xpath('//meta[starts-with(@name,""description"")]/@content')
+
+    if data:
+        data = tree.xpath('//meta[starts-with(@name,""description"")]/@content')
+        data = data[0].split(', ')
+        followers = data[0][:-9].strip()
+        following = data[1][:-9].strip()
+        posts = re.findall(r'\d+[,]*', data[2])[0]
+        name = re.findall(r'name"":""([^""]+)""', page.text)[0]
+        aboutinfo = re.findall(r'""description"":""([^""]+)""', page.text)[0]
+        instagram_profile = {
+            'success': True,
+            'profile': {
+                'name': name,
+                'profileurl': url,
+                'username': username,
+                'followers': followers,
+                'following': following,
+                'posts': posts,
+                'aboutinfo': aboutinfo
+            }
+        }
+    else:
+        instagram_profile = {
+            'success': False,
+            'profile': {}
+        }
+    return instagram_profile
+","Create a function main that accepts an Instagram username and returns a dictionary object containing profile details.
+1. The code first requests the URL of the user's profile from Instagram, then it parses out all of the information on that page into variables.
+2. Then xpath is used to find all tags within this HTML document starting with ""description"" and splitting them by commas until there are no more results found.
+3 we use the findall function of re module and find the post name info and store it in the dictionary and return the dictionary.
+4. Else will just return the dictionary with success is False.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def add_user(cls, user_id, project_id, role):
+    """"""Adds new user to the project. It can either be ""annotator"" or a 
+    ""verifier"".
+
+    Args:
+    user_id (str): Unique id of the user
+    project_id (str): Unique id of the project
+    role (str): Role assigned to the user
+
+    Returns:
+    str: unique id of the user role
+    """"""
+    if role == ""annotator"":
+    user_role = Role.annotator
+    elif role == ""verifier"":
+    user_role = ""verifier""
+
+    # Add annotator
+    new_annotator = cls.__create(
+    user_id=user_id, project_id=project_id, role=user_role
+    )
+    return new_annotator
+","Create a new classmethod add_user to add the new user to the project it ca either be annotator or verifier.
+The role assigned to the user is determined by what type of role they are in, which is decided based on their job title.
+ If they are an annotator, then their role will be Role.annotator and if they are a verifier, then their role will be Role.verifier
+ Add a new annotator for the project and return the new annotator","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def __check_admin_pool_df(self, df):
+    """"""Performs sanity checks on the given admin pool dataframe:
+
+    Args:
+        df (pandas.DataFrame): Pandas dataframe contaning admin pool data
+
+    Returns:
+        pandas.DataFrame: Cleans and checked dataframe
+    """"""
+    expected_columns = self.admin_pool_expected_columns
+
+    df = self.__common_checks(df, expected_columns)
+    if not isinstance(df, pd.DataFrame):
+        return None
+
+    # Check datatype for Transaction Remark
+    df = process_txn_remark(df)
+    if not isinstance(df, pd.DataFrame):
+        return None
+
+    # Convert Amount to float
+    df = process_amount_for_admin_pool(df)
+
+    return df","Create a private method __check_admin_pool_df
+
+(Private methods are those methods that should neither be accessed outside the class nor by any base class. In Python, there is no existence of Private methods that cannot be accessed except inside a class.)
+This function will perform the sanity checks on the given admin pool dataframe to do so
+1.  Will first call the another function __common_checks and save in a variable 
+2. Next to the check the datatype for Transaction Remark table call the function named  process_txn_remark
+3. Then to Convert Amount to float will call the process_amount_for_admin_pool function and return the dataframe","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@app.route('/', methods=('GET', 'POST'))
+def index():
+    conn = get_db_connection()
+    if request.method == 'POST':
+        url = request.form['url']
+        if not url:
+            flash('The URL is required!')
+            return redirect(url_for('index'))
+        url_data = conn.execute('INSERT INTO urls (original_url) VALUES (?)',(url,))
+        conn.commit()
+        conn.close()
+        url_id = url_data.lastrowid
+        hashid = hashids.encode(url_id)
+        short_url = request.host_url + hashid
+        return render_template('index.html', short_url=short_url)
+    return render_template('index.html')","Create a route '/' and methods can either be GET or POST
+Once the '/' endpoint is hit then only the index function will run.
+1. To connect the database called the get_db_connection function.
+2. Check if the request method is POST. If it is, it will get the URL from the form.
+3. Check if the URL is empty. If it is, it will flash a message and redirect to the index page. Else insert the URL into the database.
+4. After inserting the URL commit the changes and close the database connection.
+5. Get the last row id from the database and then encode it using the hashid ibrary.
+(hashID is a tool written in Python 3 which supports the identification of over 220 unique hash types using regular expressions.)
+6. Create a short URL by adding the host URL to the hashid.
+7. Return to the index.html template and pass the short_url variable to it.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_link():
+    url = input(""Enter Link: "")
+    if (""https"" or ""http"") in url:
+        data = rq.get(url)
+    else:
+        data = rq.get(""https://"" + url)
+    soup = BeautifulSoup(data.text, ""html.parser"")
+    links = []
+    for link in soup.find_all(""a""):
+        links.append(link.get(""href""))
+
+    # Writing the output to a file (myLinks.txt) instead of to stdout
+    # You can change 'a' to 'w' to overwrite the file each time
+    with open(""myLinks.txt"", 'a') as saved:
+        print(links[:10], file=saved)","Create a function get_link
+1. Take the url as input from the user.
+2, Checking if the url contains either https or http. If it does, it will use the url as is. If it doesn't, it will add https:// to the url.
+3. Then will use the BeautifulSoup library to parse the html data.
+4. Then the for loop that is iterating through the soup object and finding all the links and appending to the list.
+5. Now save the list in a txt file.","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+" def get_image_url(uuid):
+     """"""Returns presigned URL for the image associtated with the user assignment.
+
+    Args:
+    	uuid (str): Unique id for User Assignment
+
+    Returns:
+    	str: Link of the url
+    """"""
+    user_assignments = UserAssignment.query.filter_by(uuid=uuid).first()
+    if not user_assignments:
+    	return """"
+
+    image_id = user_assignments.image_id
+    image = Image.query.filter_by(image_id=image_id).first()
+    image_url = get_presigned_url(image.s3_path)
+    return image_url","Create a method get_image_url returns the url of the image associated with user assignment
+
+1. This is done by querying for all assignments where uuid matches uuid in the function call, and filtering out any duplicates or empty objects from the result set using filter_by().
+ 2. Then we get just one object back from this query - if there are no results, then we return """" (a string without any text)
+ 3. Then we take image_id from the user_assignment  and query the Image database to get image_id.
+ 4.  call the get_predesigned_url to get the image_url and return the url","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def get_video_id(videoURL):
+    # split YouTube URL by '/' so we can get its ID
+    videoID = str(videoURL).split('/')
+    # get the last part of the list which is the ID
+    videoID = videoID[-1]
+    if '=' in videoID:
+    # This is checking if there is an equal sign in the videoID. If there is, it will split the
+    # videoID by the equal sign and get the last element of the list.
+        videoID = videoID.split('=')[-1]
+    if not videoID[0].isalpha():
+        videoID = videoID[1:]
+    print(videoID)","Create a function get_video_id that will split the given video url se we can get the id
+1. Split your videourl by '/' using the split() method.
+2. Get the last element of the list.
+3. If '=' then split by '='.
+4. Check if the first character of the videoID is a letter. If it is not, it is removing the first character.
+5. Atlast Print the video id. ","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def process_amount_for_bank(df):
+    """"""Cleans ""Debit"", ""Credit"" columns ie removes ""Rs"", "","" and
+    converts to float.
+
+    Args:
+        df (pandas.DataFrame)
+
+    Returns:
+        pandas.DataFrame
+    """"""
+    df[""Debit""] = df[""Debit""].map(get_clean_amount)
+    df[""Credit""] = df[""Credit""].map(get_clean_amount)
+    return df","Create a function process_amount_for_bank 
+1. The function  cleans the ""Debit"" and ""Credit"" columns by removing commas, converting to float to do so will call the another function and use the map function of pandas dataframe
+2. The code cleans the ""Debit"" and ""Credit"" columns of any commas, converts them to floats, and returns a dataframe","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"@app.route('/<id>')
+def url_redirect(id):
+    conn = get_db_connection()
+    original_id = hashids.decode(id)
+    if original_id:
+        original_id = original_id[0]
+        url_data = conn.execute('SELECT original_url, clicks FROM urls WHERE id = (?)', (original_id,)).fetchone()
+        original_url = url_data['original_url']
+        clicks = url_data['clicks']
+        conn.execute('UPDATE urls SET clicks = ? WHERE id = ?',(clicks+1, original_id))
+        conn.commit()
+        conn.close()
+        return redirect(original_url)
+    else:
+        flash('Invalid URL')
+        return redirect(url_for('index'))
+","Create a route '/<id>' id will be passed as an argument.
+Once the endpoint is hit url_redirect will run.
+1. At the first step connect the database connection by calling the get_db_connection function.
+2. Decode the hashid to get the original id.
+3. The hashids.decode() method returns a list of numbers. So, we are just getting the first number from the list.
+4. Select the original_url and click from the urls table where the id is equal to the original_id. 
+5. Update the click column in the urls table and also commit the changes once the changes has been commit it is good practice to close your database connection.
+6. And finally redirect to the original_url. Else flash the error message and redirect the user to the index page.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"def file_to_audio(file):
+    #Open file Path
+    pdf_File = open(file, 'rb') 
+    pdf_Reader = PyPDF2.PdfFileReader(pdf_File)
+    count = pdf_Reader.numPages # counts number of pages in pdf
+    textList = []
+
+    for i in range(count):
+        try:
+            page = pdf_Reader.getPage(i)    
+            textList.append(page.extractText())
+        except:
+            pass
+
+    #Converting multiline text to single line text
+    textString = "" "".join(textList)
+
+    print(textString)
+
+    #Set language to english (en)
+    language = 'en'
+
+    #Call GTTS
+    myAudio = gTTS(text=textString, lang=language, slow=False)
+
+    #Save as mp3 file
+    myAudio.save(""Audio.mp3"")
+","Create a function file_to_audio that will take the file as an argument and convert text to audio
+1. Open the file in ""rb mode.
+2. Read the pdf file using the PyPDF2 module and count the number of pages in the pdf file.
+3. Create an empty list.
+4. Now iterate through the number of pages in the pdf file.
+5. In the try block extract the text from the page and append it to the empty list.
+6. Next line convert multiple lines to single-line text using the join method and print the result.
+7. Set the language to English and call gTTs.
+(gTTS is a very easy to use tool which converts the text entered, into audio which can be saved as a mp3 file)
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"
+"from PyPDF2 import PdfFileMerger
+
+# By appending in the end
+def by_appending():
+    merger = PdfFileMerger()
+    # Either provide file stream
+    f1 = open(""samplePdf1.pdf"", ""rb"")
+    merger.append(f1)
+    # Or direct file path
+    merger.append(""samplePdf2.pdf"")
+
+    merger.write(""mergedPdf.pdf"")","1. The first line creates an instance of PdfFileMerger().
+2. This object will be used to merge the two files together into one new PDF document.
+3. The next line opens up given pdf for reading, using ""rb"".
+4. Then it appends this file stream onto our merger's list of open streams so we can use it later 	on when merging with other streams or paths.
+5. Then, after opening up the pdf for writing, it appends this path onto our merger's list of open streams so we can use it later on when merging with other streams or paths as well as write out mergedPdf.pdf at the end once everything has been merged together successfully
+6. The code will merge the two PDF files into one merged file.
+","python","annotated","6888d00e-fda2-4061-9038-7a86b12c9d9b"

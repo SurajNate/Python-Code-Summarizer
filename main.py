@@ -7,6 +7,8 @@ from transformers import (
 )
 import subprocess
 import pyperclip
+import pyttsx3
+import time
 
 # Ensure page configuration is set as the first Streamlit command
 st.set_page_config(layout="wide")
@@ -14,6 +16,21 @@ st.set_page_config(layout="wide")
 
 def copy_to_clipboard(text):
     pyperclip.copy(text)
+
+def text_to_speech(text):
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 175)  # Adjust the speed (default is usually ~200)
+    engine.say(text)
+    engine.runAndWait()
+
+def typewriter_effect(text, speed=0.05):
+    placeholder = st.empty()
+    typed_text = ""
+    for char in text:
+        typed_text += char
+        placeholder.write(typed_text)
+        time.sleep(speed)
+
 
 # Initialize the model, tokenizer, and pipeline
 model_name = "sagard21/python-code-explainer"
@@ -38,12 +55,18 @@ with col1:
     )
 
 with col2:
-    st.subheader("Output")
     if "summary" in st.session_state:
-        st.text_area("Summary", value=st.session_state.summary, height=400, disabled=False)
-        # Button to copy the content
-        if st.button("Copy", key="copy_button"):
-            copy_to_clipboard(st.session_state.summary)
+        st.subheader("Generated Summary:")
+        typewriter_effect(st.session_state.summary)
+
+    # Button to copy the content
+    if st.button("Copy", key="copy_button"):
+        copy_to_clipboard(st.session_state.summary)
+        st.success("Copied to clipboard!")
+
+    if st.button("Speak", key="Speak_button"):
+        text = st.session_state.summary
+        text_to_speech(text)
     
 
 # Summarize button in a separate row
@@ -51,6 +74,7 @@ if st.button("Summarize Code", key="summarize_button", use_container_width=True)
     if 'raw_code' in st.session_state and st.session_state.raw_code.strip():
         raw_code = st.session_state.raw_code
         st.session_state.summary = pipe(raw_code)[0]["summary_text"]
+        
     else:
         st.warning("Please enter some Python code to summarize.")
 

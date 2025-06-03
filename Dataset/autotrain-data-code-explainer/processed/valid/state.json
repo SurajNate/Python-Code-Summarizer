@@ -1,0 +1,20 @@
+{
+  "_data_files": [
+    {
+      "filename": "dataset.arrow"
+    }
+  ],
+  "_fingerprint": "c5902f6d6d0b13c1",
+  "_format_columns": [
+    "feat_language",
+    "feat_status",
+    "feat_user_created",
+    "target",
+    "text"
+  ],
+  "_format_kwargs": {},
+  "_format_type": null,
+  "_indexes": {},
+  "_output_all_columns": false,
+  "_split": null
+}

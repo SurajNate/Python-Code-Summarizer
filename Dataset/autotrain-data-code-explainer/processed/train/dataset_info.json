@@ -1,0 +1,36 @@
+{
+  "citation": "",
+  "description": "AutoTrain generated dataset",
+  "features": {
+    "text": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "target": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "feat_language": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "feat_status": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "feat_user_created": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 119054,
+      "num_examples": 92,
+      "dataset_name": null
+    }
+  }
+}
